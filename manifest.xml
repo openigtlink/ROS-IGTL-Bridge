@@ -1,0 +1,14 @@
+<package>
+  <description brief="igtlnode">
+
+     igtlnode
+
+  </description>
+  <author>tobias</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/igtlnode</url>
+ <depend package="roscpp"/>
+</package>
+
+
