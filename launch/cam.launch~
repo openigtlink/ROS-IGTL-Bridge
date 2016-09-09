@@ -1,0 +1,25 @@
+<launch>
+  <!-- Set this to your camera's name -->
+  <arg name="cam_name" value="creative_cam" />
+
+  <!-- Start the GSCAM node -->
+  <env name="GSCAM_CONFIG" value="v4l2src device=/dev/video0 ! video/x-raw-yuv,framerate=30/1,width=320,height=240 ! ffmpegcolorspace " />
+  <node pkg="gscam" type="gscam" name="$(arg cam_name)">
+    <param name="camera_name" value="$(arg cam_name)" />
+    <!--param name="camera_info_url" value="package://localcam/calibrations/${NAME}.yaml" /-->
+    <remap from="camera/image_raw" to="$(arg cam_name)/image_raw" />
+  </node>
+
+  <!-- Provide rectification -->
+  <node pkg="image_proc" type="image_proc" name="creative_image_proc"
+        ns="$(arg cam_name)" />
+
+  <!-- View the raw and rectified output -->
+  <node pkg="image_view" type="image_view" name="creative_view" >
+    <remap from="image" to="/$(arg cam_name)/image_raw" />
+  </node>
+    
+  <!--node pkg="image_view" type="image_view" name="creative_view_rect" >
+    <remap from="image" to="/$(arg cam_name)/image_rect_color" />
+  </node-->
+</launch>

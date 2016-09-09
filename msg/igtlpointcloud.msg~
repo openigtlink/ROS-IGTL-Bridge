@@ -1,0 +1,4 @@
+#---Pointcloud Message
+
+string name
+sensor_msgs/PointCloud[] pcl

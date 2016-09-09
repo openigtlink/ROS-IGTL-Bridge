@@ -1,0 +1,56 @@
+class rosigtlbridge_class
+{
+
+public:
+	igtlnode_class(int argc, char *argv[], const char* node_name);
+	~igtlnode_class();
+	void Run();
+	void testfunction();
+	igtl::Socket::Pointer socket;
+	
+private:
+	ros::NodeHandle *nh;
+	ros::Publisher point_pub;
+	ros::Publisher transform_pub;
+	ros::Publisher polydata_pub;
+	ros::Publisher image_pub;
+	ros::Publisher string_pub;
+	ros::Subscriber sub_point;
+	ros::Subscriber sub_transform;
+	ros::Subscriber sub_polydata;
+	ros::Subscriber sub_image;
+	ros::Subscriber sub_video;
+	ros::Subscriber sub_string;
+
+	
+
+	
+
+	static igtl::Socket::Pointer GetSocketPointer();
+	
+	void CreateIGTLServer();
+	void IGTLReceiverThread();
+	void pointCallback(const rosigtlbridge::igtlpoint::ConstPtr& msg);
+	void transformCallback(const rosigtlbridge::igtltransform::ConstPtr& msg);
+	void stringCallback(const rosigtlbridge::igtlstring::ConstPtr& msg);
+	void imageCallback(const rosigtlbridge::igtlimage::ConstPtr& msg);
+	void videoCallback(sensor_msgs::Image::ConstPtr msg);
+	void polydataCallback(const rosigtlbridge::igtlpolydata::ConstPtr& msg);
+
+	// Sending
+	void SendTransform(const char* name, igtl::Matrix4x4 &sendMatrix);
+	void SendPoint (const char* name,geometry_msgs::Point point);
+	static void SendPolyData(const char* name,vtkSmartPointer<vtkPolyData> polydata);
+	void SendImage(rosigtlbridge::igtlimage::ConstPtr imgmsg);
+	void SendVideo(sensor_msgs::Image::ConstPtr imgmsg);
+	void SendString(const char* name, std::string stringmsg);
+
+	// Receiving
+	void ReceivePoints(igtl::Socket * socket, igtl::MessageHeader * header);
+	void ReceiveImage(igtl::Socket * socket, igtl::MessageHeader * header);
+	void ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader * header);
+	void ReceivePolyData(igtl::Socket * socket, igtl::MessageHeader * header,vtkSmartPointer<vtkPolyData> poly);
+	void ReceiveString(igtl::Socket * socket, igtl::MessageHeader * header);
+
+	
+};

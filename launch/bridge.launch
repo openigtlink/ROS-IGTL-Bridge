@@ -1,0 +1,10 @@
+<launch>
+<!-- start the bridge -->
+   <param name="RIB_server_ip" value="192.168.178.28" type="str"/>
+   <param name="RIB_port" value="18946" type="int"/>
+   <param name="RIB_type" value="client" type="str"/>
+   <node pkg="ros_igtl_bridge" type="ROS_IGTL_Bridge" name="ROS_IGTL_BRIDGE" output="screen">
+
+   </node>
+</launch>
+

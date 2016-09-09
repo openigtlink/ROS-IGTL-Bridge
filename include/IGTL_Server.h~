@@ -1,0 +1,83 @@
+#ifndef IGTL_SERVER_H
+#define IGTL_SERVER_H
+// ROS Includes
+#include "ros/ros.h"
+
+// IGTL Includes
+#include "igtlImageMessage.h"
+#include "igtlMessageHeader.h"
+#include "igtlMessageBase.h"
+#include "igtlMath.h"
+#include "igtlOSUtil.h"
+#include "igtlPolyDataMessage.h"
+#include "igtlServerSocket.h"
+#include "igtlSmartPointer.h"
+#include "igtlStatusMessage.h"
+#include "igtlStringMessage.h"
+#include "igtlTransformMessage.h"
+#include "igtlPointMessage.h"
+// VTK Includes
+#include <vtkCellArray.h>
+#include <vtkIdList.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+#include <vtkPolygon.h>
+#include <vtkVertex.h>
+#include <vtkPolyLine.h>
+#include <vtkTriangleStrip.h>
+#include <vtkFloatArray.h>
+
+// C++ Includes
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <math.h>
+#include <sstream>
+#include <stdint.h>
+
+// OCT Paramter---------------------------------------------------------
+typedef struct octScanParameter{
+	float   x_range;    /**< x scan dimension */
+    float   y_range;    /**< y scan dimension */
+    float   z_range;    /**< z scan dimension */
+    float   x_spacing;    /**< x spacing */
+    float   y_spacing;    /**< y spacing */
+    float   z_spacing;    /**< z spacing */
+    int32_t x_steps;    /**< scan steps in x */
+    int32_t y_steps;    /**< scan steps in y */
+    int32_t z_steps;    /**< scan steps in z */
+    float   x_offset;   /**< scan area offset in x */
+    float   y_offset;   /**< scan area offset in y */
+}octScanParameter_t;
+
+// ---------------------------------------------------------------------
+class IGTL_Server
+{
+public:
+    IGTL_Server(igtl::Socket::Pointer m_socket);
+     ~IGTL_Server();
+	
+	// Sending
+	void SendTransform(const char* name, igtl::Matrix4x4 &sendMatrix);
+	void SendPoints (const char* name,vtkSmartPointer<vtkPoints> points);
+	int  SendPolyData(const char* name,vtkSmartPointer<vtkPolyData> polydata);
+	void SendImage(const char* name, std::vector<uint8_t> image, octScanParameter_t scanparameter, igtl::Matrix4x4 *matrix);
+	void SendString(std::string AckString);
+
+	// Receiving
+	vtkSmartPointer<vtkObject> ReceiveFromSlicer();
+	void ReceivePoints(igtl::Socket * socket, igtl::MessageHeader * header, vtkSmartPointer<vtkPoints> points);
+	void ReceiveImage();
+	void ReceiveTransform(igtl::Socket * socket, igtl::MessageHeader * header,igtl::Matrix4x4 *matrix);
+	void ReceivePolyData(igtl::Socket * socket, igtl::MessageHeader * header,vtkSmartPointer<vtkPolyData> poly);
+	const char* ReceiveString(igtl::Socket * socket, igtl::MessageHeader * header);
+  
+private:
+	igtl::Socket::Pointer socket;
+};
+#endif
+
+
+
