@@ -11,7 +11,7 @@ For further information regarding the OpenIGTLink protocol please see:
 Build Instruction
 -----------------
 
-[Install ROS] - http://wiki.ros.org/
+[Install ROS] (http://wiki.ros.org)
 and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
 
     $ mkdir -p ~/catkin_ws/src
