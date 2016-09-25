@@ -32,7 +32,7 @@ Launch the test procedure for communication with [3D Slicer] (https://www.slicer
 
     $ roslaunch ros_igtl_bridge test.launch
     
-To simply run the bridge without sending test sample data type:
+To simply run the bridge without sending test sample data, type:
 
 	$ roslaunch ros_igtl_bridge bridge.launch
 
