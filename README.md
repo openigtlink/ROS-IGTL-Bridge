@@ -36,7 +36,7 @@ To simply run the bridge without sending test sample data, type:
 
 	$ roslaunch ros_igtl_bridge bridge.launch
 
-It is possible to edit the launch files and set your IP & Port in the file.
+It is possible to edit the launch files and set your IP & Port in the file. Run the node as server or client by adjusting the parameter RIB_type.
 Open the file and uncomment the lines:
 
 	  $ <!--param name="RIB_server_ip" value="111.111.111.111" type="str"/-->
@@ -46,7 +46,7 @@ Open the file and uncomment the lines:
 The node can be run as server or client. If you executed the test procedure, the node will send
 a "ROS_IGTL_Test_Transform" with random translation, a random "ROS_IGTL_Test_Point", 
 a random "ROS_IGTL_Test_Pointcloud" including 20 points, a "ROS_IGTL_Test_String" and a "ROS_IGTL_Test_PolyData", which is a rendered model 
-of the 3D Slicer MRHead sample data. Any data received from 3D Slicer and published to a ROS topic will be displayed by the test node.
+of the 3D Slicer MRHead sample data. Any data received from 3D Slicer is published to a ROS topic by the bridge node and displayed by the test node.
 
 
 
