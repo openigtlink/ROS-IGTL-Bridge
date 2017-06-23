@@ -17,16 +17,17 @@ and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/
     $ mkdir -p ~/catkin_ws/src
     $ cd ~/catkin_ws/src
     $ catkin_init_workspace
-	$ source devel/setup.bash
+    $ cmake .
+    $ source devel/setup.bash
 	
 Then download the ros_igtl_bridge package from GitHub:
 	
-	$ git clone https://github.com/openigtlink/ROS-IGTL-Bridge/ --branch ros_igtl_bridge
+    $ git clone https://github.com/openigtlink/ROS-IGTL-Bridge
 
 and execute catkin_make in your workspace directory:
 
-	$ cd ~/catkin_ws/
-	$ catkin_make
+    $ cd ~/catkin_ws/
+    $ catkin_make
 
 Launch the test procedure for communication with [3D Slicer] (https://www.slicer.org/):
 
@@ -34,7 +35,7 @@ Launch the test procedure for communication with [3D Slicer] (https://www.slicer
     
 To simply run the bridge without sending test sample data, type:
 
-	$ roslaunch ros_igtl_bridge bridge.launch
+    $ roslaunch ros_igtl_bridge bridge.launch
 
 It is possible to edit the launch files and set your IP & Port in the file. Run the node as server or client by adjusting the parameter RIB_type.
 Open the file and uncomment the lines:
