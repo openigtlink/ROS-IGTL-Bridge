@@ -117,7 +117,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 catkin_package(
   INCLUDE_DIRS  include ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/include ${VTK_INCLUDE_DIRS}   ${catkin_INCLUDE_DIRS}
   CATKIN_DEPENDS message_runtime
- # LIBRARIES lib
+#  LIBRARIES lib
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS libs
 )
@@ -129,24 +129,25 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
- include_directories(include ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/include ${CMAKE_CURRENT_LIST_DIR}/testing/include ${VTK_INCLUDE_DIRS})
+include_directories(include ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/include ${CMAKE_CURRENT_LIST_DIR}/testing/include ${VTK_INCLUDE_DIRS})
 
 ## Declare a C++ library
- add_library(ROS_IGTL_Bridge_Lib
+add_library(ROS_IGTL_Bridge_Lib
    	src/ROS_IGTL_Bridge.cpp
 	include/ROS_IGTL_Bridge.h
 
  )
 
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(ros_igtl_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
 ## Declare a C++ executable
 # add_executable(ros_igtl_bridge_node src/ros_igtl_bridge_node.cpp)
 add_executable(ROS_IGTL_Bridge src/ROS_IGTL_Bridge.cpp src/main.cpp)
 add_executable(ROS_IGTL_Test testing/ROS_IGTL_Test.cpp testing/main_test.cpp)
+
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
+#add_dependencies(ros_igtl_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ROS_IGTL_Bridge ros_igtl_bridge_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
