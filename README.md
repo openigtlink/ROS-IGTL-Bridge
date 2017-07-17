@@ -8,6 +8,7 @@ For further information regarding the OpenIGTLink protocol please see:
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
 Build Instruction
 -----------------
 
@@ -48,6 +49,10 @@ a "ROS_IGTL_Test_Transform" with random translation, a random "ROS_IGTL_Test_Poi
 a random "ROS_IGTL_Test_Pointcloud" including 20 points, a "ROS_IGTL_Test_String" and a "ROS_IGTL_Test_PolyData", which is a rendered model 
 of the 3D Slicer MRHead sample data. Any data received from 3D Slicer is published to a ROS topic by the bridge node and displayed by the test node.
 
+
+References
+----------
+1. Frank T, Krieger A, Leonard S, Patel NA, Tokuda J. ROS-IGTL-Bridge: an open network interface for image-guided therapy using the ROS environment. Int J Comput Assist Radiol Surg. 2017 May 31. doi: 10.1007/s11548-017-1618-1. PubMed PMID: [28567563](https://www.ncbi.nlm.nih.gov/pubmed/?term=28567563).
 
 
 
