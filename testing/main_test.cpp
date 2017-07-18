@@ -1,4 +1,4 @@
-#include <ROS_IGTL_Test.h>
+#include <ros_igtl_test.h>
 
 
 int main (int argc, char *argv[])

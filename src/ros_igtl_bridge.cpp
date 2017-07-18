@@ -1,4 +1,4 @@
-#include <ROS_IGTL_Bridge.h>
+#include <ros_igtl_bridge.h>
 #include "ShowPolyData.h"
 //----------------------------------------------------------------------
 ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
