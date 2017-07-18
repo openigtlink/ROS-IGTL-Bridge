@@ -5,15 +5,14 @@ project(ros_igtl_bridge)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  sensor_msgs
   message_generation
   message_runtime
+  geometry_msgs
+  sensor_msgs
   roscpp
   rospy
   std_msgs
   cv_bridge
-
 )
 
 ## System dependencies are found with CMake's conventions
@@ -116,8 +115,7 @@ find_package(OpenIGTLink REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS  include ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/include ${VTK_INCLUDE_DIRS}   ${catkin_INCLUDE_DIRS}
-  INCLUDE_DIRS  include ${OpenIGTLink_INCLUDE_DIRS} ${VTK_INCLUDE_DIRS}   ${catkin_INCLUDE_DIRS}
+  INCLUDE_DIRS  include ${OpenIGTLink_INCLUDE_DIRS} ${VTK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS}
   CATKIN_DEPENDS message_runtime
 #  LIBRARIES lib
 #  CATKIN_DEPENDS other_catkin_pkg
@@ -131,7 +129,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include ${OpenIGTLink_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR}/testing/include ${VTK_INCLUDE_DIRS})
+include_directories(include ${OpenIGTLink_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR}/testing/include ${VTK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}_lib
@@ -149,7 +147,8 @@ add_executable(${PROJECT_NAME}_test testing/ros_igtl_test.cpp testing/main_test.
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 #add_dependencies(ros_igtl_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(${PROJECT_NAME}_node ros_igtl_bridge_generate_messages_cpp)
+
+add_dependencies(${PROJECT_NAME}_lib ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

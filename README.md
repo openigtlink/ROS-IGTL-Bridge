@@ -20,9 +20,7 @@ Please refer to http://openigtlink.org/. In the following instruction, we assume
 and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
 
     $ mkdir -p ~/catkin_ws/src
-    $ cd ~/catkin_ws/src
-    $ catkin_init_workspace
-    $ cmake .
+    $ catkin_make
     $ source devel/setup.bash
 	
 Then download the ros_igtl_bridge package from GitHub:
