@@ -15,6 +15,11 @@ For further information regarding the OpenIGTLink protocol please see:
 Build Instruction
 -----------------
 
+The following procedure is tested on:
+
+- Ubuntu 14.04 + ROS Indigo
+- Ubuntu 16.04 + ROS Kinetic Kame
+
 [Install OpenIGTLink]
 
 Please refer to http://openigtlink.org/. In the following instruction, we assume that the build directory for the OpenIGTLink library is located at: ~/igtl/OpenIGTLink-build
