@@ -3,13 +3,13 @@
    <!--param name="RIB_server_ip" value="111.111.111.111" type="str"/-->
    <!--param name="RIB_port" value="18944" type="int"/-->
    <!--param name="RIB_type" value="client" type="str"/-->
-   <node pkg="ros_igtl_bridge" type="ROS_IGTL_Bridge" name="ROS_IGTL_BRIDGE" output="screen">
+   <node pkg="ros_igtl_bridge" type="ros_igtl_bridge_node" name="ros_igtl_bridge_node" output="screen">
 
    </node>
 <!-- start the test -->
    <param name="test_pd" value="$(find ros_igtl_bridge)/testing/model.vtk" type="str"/>
    <param name="test_oct" value="$(find ros_igtl_bridge)/testing/oct_raw.cache" type="str"/>
-   <node name="ROS_IGTL_TEST" pkg="ros_igtl_bridge" type="ROS_IGTL_Test"     output="screen">
+   <node pkg="ros_igtl_bridge" type="ros_igtl_bridge_test" name="ros_igtl_bridge_test" output="screen">
    </node>
 </launch>
 

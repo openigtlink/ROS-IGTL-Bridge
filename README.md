@@ -1,8 +1,11 @@
-# ROS-IGTL-Bridge
+ROS-IGTL-Bridge
+===============
 
 Author:Tobias Frank
 
-This ROS-Node provides an OpenIGTLink bridge to exchange data with ROS. It supports sending and receiving Transformations, Images, Strings, PolyData, Points and Pointclouds. 
+This ROS-Node provides an OpenIGTLink bridge to exchange data with ROS. 
+It supports sending and receiving Transformations, Images, Strings, 
+PolyData, Points and Pointclouds. 
 For further information regarding the OpenIGTLink protocol please see:
 - http://openigtlink.org/
 
@@ -12,13 +15,15 @@ For further information regarding the OpenIGTLink protocol please see:
 Build Instruction
 -----------------
 
+[Install OpenIGTLink]
+
+Please refer to http://openigtlink.org/. In the following instruction, we assume that the build directory for the OpenIGTLink library is located at: ~/igtl/OpenIGTLink-build
+
 [Install ROS] (http://wiki.ros.org)
 and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
 
     $ mkdir -p ~/catkin_ws/src
-    $ cd ~/catkin_ws/src
-    $ catkin_init_workspace
-    $ cmake .
+    $ catkin_make
     $ source devel/setup.bash
 	
 Then download the ros_igtl_bridge package from GitHub:
@@ -28,7 +33,8 @@ Then download the ros_igtl_bridge package from GitHub:
 and execute catkin_make in your workspace directory:
 
     $ cd ~/catkin_ws/
-    $ catkin_make
+    $ catkin_make --cmake-args -DOpenIGTLink_DIR:PATH=~/igtl/OpenIGTLink-build
+
 
 Launch the test procedure for communication with [3D Slicer] (https://www.slicer.org/):
 

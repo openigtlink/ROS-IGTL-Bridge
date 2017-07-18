@@ -6,7 +6,7 @@
 #include "geometry_msgs/Transform.h"
 #include "image_transport/image_transport.h"
 
-#include <ROS_IGTL_Bridge.h>
+#include <ros_igtl_bridge.h>
 
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>

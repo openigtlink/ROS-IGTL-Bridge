@@ -5,21 +5,21 @@ project(ros_igtl_bridge)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  sensor_msgs
   message_generation
   message_runtime
+  geometry_msgs
+  sensor_msgs
   roscpp
   rospy
   std_msgs
   cv_bridge
-
 )
 
 ## System dependencies are found with CMake's conventions
 
 find_package(VTK REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system thread)
+find_package(OpenIGTLink REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -115,7 +115,7 @@ find_package(Boost REQUIRED COMPONENTS system thread)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS  include ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/include ${VTK_INCLUDE_DIRS}   ${catkin_INCLUDE_DIRS}
+  INCLUDE_DIRS  include ${OpenIGTLink_INCLUDE_DIRS} ${VTK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS}
   CATKIN_DEPENDS message_runtime
 #  LIBRARIES lib
 #  CATKIN_DEPENDS other_catkin_pkg
@@ -129,44 +129,44 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/include ${CMAKE_CURRENT_LIST_DIR}/testing/include ${VTK_INCLUDE_DIRS})
+include_directories(include ${OpenIGTLink_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR}/testing/include ${VTK_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
-add_library(ROS_IGTL_Bridge_Lib
-   	src/ROS_IGTL_Bridge.cpp
-	include/ROS_IGTL_Bridge.h
+add_library(${PROJECT_NAME}_lib
+   	src/ros_igtl_bridge.cpp
+	include/ros_igtl_bridge.h
 
  )
 
 ## Declare a C++ executable
 # add_executable(ros_igtl_bridge_node src/ros_igtl_bridge_node.cpp)
-add_executable(ROS_IGTL_Bridge src/ROS_IGTL_Bridge.cpp src/main.cpp)
-add_executable(ROS_IGTL_Test testing/ROS_IGTL_Test.cpp testing/main_test.cpp)
+add_executable(${PROJECT_NAME}_node src/ros_igtl_bridge.cpp src/main.cpp)
+add_executable(${PROJECT_NAME}_test testing/ros_igtl_test.cpp testing/main_test.cpp)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
 #add_dependencies(ros_igtl_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ROS_IGTL_Bridge ros_igtl_bridge_generate_messages_cpp)
+
+add_dependencies(${PROJECT_NAME}_lib ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(ros_igtl_bridge_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(ROS_IGTL_Bridge ${catkin_LIBRARIES}  )
-target_link_libraries(ROS_IGTL_Bridge ${VTK_LIBRARIES})
-target_link_libraries(ROS_IGTL_Bridge ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/libOpenIGTLink.a)
-target_link_libraries(ROS_IGTL_Bridge ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/libigtlutil.a)
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES}  )
+target_link_libraries(${PROJECT_NAME}_node ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_node OpenIGTLink)
 
-target_link_libraries(ROS_IGTL_Bridge_Lib ${catkin_LIBRARIES})
-target_link_libraries(ROS_IGTL_Bridge_Lib ${VTK_LIBRARIES})
-target_link_libraries(ROS_IGTL_Bridge_Lib ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/libOpenIGTLink.a)
-target_link_libraries(ROS_IGTL_Bridge_Lib ${CMAKE_CURRENT_LIST_DIR}/OpenIGTLink/libigtlutil.a)
 
-target_link_libraries(ROS_IGTL_Test ${catkin_LIBRARIES}  )
-target_link_libraries(ROS_IGTL_Test ${VTK_LIBRARIES})
-target_link_libraries(ROS_IGTL_Test ROS_IGTL_Bridge_Lib)
+target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_lib ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_lib OpenIGTLink)
+
+target_link_libraries(${PROJECT_NAME}_test ${catkin_LIBRARIES}  )
+target_link_libraries(${PROJECT_NAME}_test ${VTK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME}_lib)
 
 #############
 ## Install ##
