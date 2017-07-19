@@ -1,5 +1,9 @@
 #include <ros_igtl_bridge.h>
 #include "ShowPolyData.h"
+
+#include "message_converter_point.h"
+
+
 //----------------------------------------------------------------------
 ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
 {
@@ -40,16 +44,21 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
       }
     }
   ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");	
-  
+  //MessageConverterPoint* mcpoint = new MessageConverterPoint(nh);
+  MessageConverterPoint mcpoint;
+  mcpoint.setNodeHandle(nh);
+  mcpoint.setSocket(socket);
+  mcpoint.start();
+
   // declare publisher 
-  point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
+  //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
   transform_pub = nh->advertise<ros_igtl_bridge::igtltransform>("IGTL_TRANSFORM_IN", 10);
   polydata_pub = nh->advertise<ros_igtl_bridge::igtlpolydata>("IGTL_POLYDATA_IN", 1);
   string_pub = nh->advertise<ros_igtl_bridge::igtlstring>("IGTL_STRING_IN", 10);
   image_pub = nh->advertise<sensor_msgs::Image>("IGTL_IMAGE_IN", 3);
   
   // declare subscriber
-  sub_point = nh->subscribe("IGTL_POINT_OUT", 10, &ROS_IGTL_Bridge::pointCallback,this);  
+  //sub_point = nh->subscribe("IGTL_POINT_OUT", 10, &ROS_IGTL_Bridge::pointCallback,this);  
   sub_pointcloud = nh->subscribe("IGTL_POINTCLOUD_OUT", 2, &ROS_IGTL_Bridge::pointcloudCallback,this);  
   sub_transform = nh->subscribe("IGTL_TRANSFORM_OUT", 10, &ROS_IGTL_Bridge::transformCallback,this);  
   sub_string = nh->subscribe("IGTL_STRING_OUT", 20, &ROS_IGTL_Bridge::stringCallback,this); 
