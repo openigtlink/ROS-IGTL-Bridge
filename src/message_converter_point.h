@@ -99,23 +99,19 @@ int MessageConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
 
 void MessageConverterPoint::onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr & msg)
 {
+  geometry_msgs::Point point = msg->pointdata;
+  
+  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
+  pointMsg->SetDeviceName(msg->name.c_str());
+  
+  igtl::PointElement::Pointer pointE; 
+  pointE = igtl::PointElement::New();
+  pointE->SetPosition(point.x, point.y,point.z);
+  pointMsg->AddPointElement(pointE);
+  pointMsg->Pack();
+  
+  this->socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
 }
-//{
-//  geometry_msgs::Point point = msg->pointdata;
-//  
-//  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
-//  pointMsg->SetDeviceName(msg->name.c_str());
-//  
-//  igtl::PointElement::Pointer pointE; 
-//  pointE = igtl::PointElement::New();
-//  pointE->SetPosition(point.x, point.y,point.z);
-//  
-//  pointMsg->AddPointElement(pointE);
-//  
-//  pointMsg->Pack();
-//  
-//  this->socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
-//}
 
 
 #endif // __MessageConverterPoint_H

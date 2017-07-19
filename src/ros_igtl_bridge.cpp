@@ -2,6 +2,7 @@
 #include "ShowPolyData.h"
 
 #include "message_converter_point.h"
+#include "message_converter_transform.h"
 
 
 //----------------------------------------------------------------------
@@ -51,9 +52,16 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   mcpoint->setTopicSubscribe("IGTL_POINT_OUT");
   mcpoint->start();
 
+  this->mctransform = new MessageConverterTransform;
+  mctransform->setNodeHandle(nh);
+  mctransform->setSocket(socket);
+  mctransform->setTopicPublish("IGTL_TRANSFORM_IN");
+  mctransform->setTopicSubscribe("IGTL_TRANSFORM_OUT");
+  mctransform->start();
+
   // declare publisher 
   //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
-  transform_pub = nh->advertise<ros_igtl_bridge::igtltransform>("IGTL_TRANSFORM_IN", 10);
+  //transform_pub = nh->advertise<ros_igtl_bridge::igtltransform>("IGTL_TRANSFORM_IN", 10);
   polydata_pub = nh->advertise<ros_igtl_bridge::igtlpolydata>("IGTL_POLYDATA_IN", 1);
   string_pub = nh->advertise<ros_igtl_bridge::igtlstring>("IGTL_STRING_IN", 10);
   image_pub = nh->advertise<sensor_msgs::Image>("IGTL_IMAGE_IN", 3);
@@ -61,7 +69,7 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   // declare subscriber
   //sub_point = nh->subscribe("IGTL_POINT_OUT", 10, &ROS_IGTL_Bridge::pointCallback,this);  
   sub_pointcloud = nh->subscribe("IGTL_POINTCLOUD_OUT", 2, &ROS_IGTL_Bridge::pointcloudCallback,this);  
-  sub_transform = nh->subscribe("IGTL_TRANSFORM_OUT", 10, &ROS_IGTL_Bridge::transformCallback,this);  
+  //sub_transform = nh->subscribe("IGTL_TRANSFORM_OUT", 10, &ROS_IGTL_Bridge::transformCallback,this);  
   sub_string = nh->subscribe("IGTL_STRING_OUT", 20, &ROS_IGTL_Bridge::stringCallback,this); 
   sub_image = nh->subscribe("IGTL_IMAGE_OUT", 1, &ROS_IGTL_Bridge::imageCallback,this); 
   sub_video = nh->subscribe("IGTL_VIDEO_OUT", 1, &ROS_IGTL_Bridge::videoCallback,this); 
@@ -159,28 +167,28 @@ void ROS_IGTL_Bridge::ConnectToIGTLServer()
 
 // ---- callbacks for sending ------------------------------------------
 //----------------------------------------------------------------------
-void ROS_IGTL_Bridge::transformCallback(const ros_igtl_bridge::igtltransform::ConstPtr& msg)
-{
-  // convert msg to igtl matrix
-  igtl::Matrix4x4 Transformation;
-  igtl::IdentityMatrix(Transformation);
-  
-  // rotation
-  float quaternion [4];
-  quaternion[0] = msg->transform.rotation.x;
-  quaternion[1] = msg->transform.rotation.y;
-  quaternion[2] = msg->transform.rotation.z;
-  quaternion[3] = msg->transform.rotation.w;
-  igtl::QuaternionToMatrix(quaternion,Transformation);
-  
-  // translation
-  Transformation[0][3] = msg->transform.translation.x;
-  Transformation[1][3] = msg->transform.translation.y;
-  Transformation[2][3] = msg->transform.translation.z;
-  
-  // send transform
-  SendTransform(msg->name.c_str(),Transformation);
-}
+//void ROS_IGTL_Bridge::transformCallback(const ros_igtl_bridge::igtltransform::ConstPtr& msg)
+//{
+//  // convert msg to igtl matrix
+//  igtl::Matrix4x4 Transformation;
+//  igtl::IdentityMatrix(Transformation);
+//  
+//  // rotation
+//  float quaternion [4];
+//  quaternion[0] = msg->transform.rotation.x;
+//  quaternion[1] = msg->transform.rotation.y;
+//  quaternion[2] = msg->transform.rotation.z;
+//  quaternion[3] = msg->transform.rotation.w;
+//  igtl::QuaternionToMatrix(quaternion,Transformation);
+//  
+//  // translation
+//  Transformation[0][3] = msg->transform.translation.x;
+//  Transformation[1][3] = msg->transform.translation.y;
+//  Transformation[2][3] = msg->transform.translation.z;
+//  
+//  // send transform
+//  SendTransform(msg->name.c_str(),Transformation);
+//}
 
 ////----------------------------------------------------------------------
 //void ROS_IGTL_Bridge::pointCallback(const ros_igtl_bridge::igtlpoint::ConstPtr& msg)
@@ -253,7 +261,8 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
     // DATATYPE TRANSFORM ------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
       { 
-      ReceiveTransform(headerMsg);
+	//ReceiveTransform(headerMsg);
+	this->mctransform->onIGTLMessage(headerMsg);
       }
     // DATATYPE POLYDATA -------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "POLYDATA") == 0)
@@ -273,66 +282,66 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
     }
 }
 
-// sending / receiving methods
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::SendTransform(const char* name, igtl::Matrix4x4 &sendMatrix)
-{
-  // generate message
-  igtl::TransformMessage::Pointer transMsg;
-  transMsg = igtl::TransformMessage::New();
-  transMsg->SetDeviceName(name);
-  transMsg->SetMatrix(sendMatrix);
-  transMsg->Pack();
-  socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
-}
+//// sending / receiving methods
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::SendTransform(const char* name, igtl::Matrix4x4 &sendMatrix)
+//{
+//  // generate message
+//  igtl::TransformMessage::Pointer transMsg;
+//  transMsg = igtl::TransformMessage::New();
+//  transMsg->SetDeviceName(name);
+//  transMsg->SetMatrix(sendMatrix);
+//  transMsg->Pack();
+//  socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
+//}
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::ReceiveTransform(igtl::MessageHeader * header)
-{
-  // create a message buffer to receive transform data
-  igtl::TransformMessage::Pointer transMsg;
-  transMsg = igtl::TransformMessage::New();
-  transMsg->SetMessageHeader(header);
-  transMsg->AllocatePack();
-  
-  // receive transform data from the socket
-  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
-  
-  // unpack message
-  int c = transMsg->Unpack(1);
-  
-  if (c & igtl::MessageHeader::UNPACK_BODY) 
-    { 
-    // retrive the transform data
-    ros_igtl_bridge::igtltransform msg;
-    igtl::Matrix4x4 igtlmatrix;
-    igtl::IdentityMatrix(igtlmatrix);
-    transMsg->GetMatrix(igtlmatrix);
-    
-    msg.transform.translation.x = igtlmatrix[0][3];
-    msg.transform.translation.y = igtlmatrix[1][3];
-    msg.transform.translation.z = igtlmatrix[2][3];
-    
-    float quaternion [4];
-    igtl::MatrixToQuaternion(igtlmatrix,quaternion);
-    
-
-    msg.transform.rotation.x = quaternion[0];
-    msg.transform.rotation.y = quaternion[1];
-    msg.transform.rotation.z = quaternion[2];
-    msg.transform.rotation.w = quaternion[3];
-    
-    msg.name = transMsg->GetDeviceName();
-    
-    // publish to topic
-    transform_pub.publish(msg);
-    }
-  else 
-    {
-    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: TRANSFORM.");
-    return ;
-    }
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::ReceiveTransform(igtl::MessageHeader * header)
+//{
+//  // create a message buffer to receive transform data
+//  igtl::TransformMessage::Pointer transMsg;
+//  transMsg = igtl::TransformMessage::New();
+//  transMsg->SetMessageHeader(header);
+//  transMsg->AllocatePack();
+//  
+//  // receive transform data from the socket
+//  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
+//  
+//  // unpack message
+//  int c = transMsg->Unpack(1);
+//  
+//  if (c & igtl::MessageHeader::UNPACK_BODY) 
+//    { 
+//    // retrive the transform data
+//    ros_igtl_bridge::igtltransform msg;
+//    igtl::Matrix4x4 igtlmatrix;
+//    igtl::IdentityMatrix(igtlmatrix);
+//    transMsg->GetMatrix(igtlmatrix);
+//    
+//    msg.transform.translation.x = igtlmatrix[0][3];
+//    msg.transform.translation.y = igtlmatrix[1][3];
+//    msg.transform.translation.z = igtlmatrix[2][3];
+//    
+//    float quaternion [4];
+//    igtl::MatrixToQuaternion(igtlmatrix,quaternion);
+//    
+//
+//    msg.transform.rotation.x = quaternion[0];
+//    msg.transform.rotation.y = quaternion[1];
+//    msg.transform.rotation.z = quaternion[2];
+//    msg.transform.rotation.w = quaternion[3];
+//    
+//    msg.name = transMsg->GetDeviceName();
+//    
+//    // publish to topic
+//    transform_pub.publish(msg);
+//    }
+//  else 
+//    {
+//    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: TRANSFORM.");
+//    return ;
+//    }
+//}
 
 ////----------------------------------------------------------------------
 //void ROS_IGTL_Bridge::SendPoint (const char* name,geometry_msgs::Point point)
