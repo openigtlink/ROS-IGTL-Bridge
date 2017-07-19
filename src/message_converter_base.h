@@ -11,10 +11,11 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverter_H
-#define __MessageConverter_H
+#ifndef __MessageConverterBase_H
+#define __MessageConverterBase_H
 
 #include "ros/ros.h"
+#include <ros/callback_queue.h>
 
 template <typename MessageType>
 class MessageConverterBase
@@ -24,27 +25,32 @@ public:
   MessageConverterBase();
   MessageConverterBase(ros::NodeHandle *nh);
   MessageConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  
+  virtual uint32_t queueSizePublish() { return 10; }
+  virtual uint32_t queueSizeSubscribe() { return 10; }
+  virtual const char* messageTypeString() { return ""; };
 
-  virtual void setNodeHandle(ros::NodeHandle* nh);
-  virtual void setTopicPublish(const char* topic);
-  virtual void setTopicSubscribe(const char* topic);
+public:
+  virtual int onIGTLMessage(igtl::MessageHeader * header) = 0;
+protected:
+  virtual void onROSMessage(const typename MessageType::ConstPtr& msg) = 0;
+
+public:
+  void setNodeHandle(ros::NodeHandle* nh);
+  void setTopicPublish(const char* topic);
+  void setTopicSubscribe(const char* topic);
+  void setQueueSize(uint32_t size) {this->queueSize = size; };
 
   virtual void setSocket(igtl::Socket * socket);
 
   bool start();
-
-  virtual uint32_t queueSizePublish() { return 10; }
-  virtual uint32_t queueSizeSubscribe() { return 10; }
-  virtual const char* defaultTopicPublish() { return "IGTL_POINT_IN"; }
-  virtual const char* defaultTopicSubscribe() { return "IGTL_POINT_OUT"; }
-
-  virtual const char* messageTypeString() { return "POINT"; }
-  virtual int onReceiveIGTLMessage(igtl::MessageHeader * header) = 0;
   
 protected:
 
   ~MessageConverterBase();
 
+  uint32_t    queueSize;
+  
   std::string topicPublish;
   std::string topicSubscribe;
 
@@ -54,9 +60,7 @@ protected:
   ros::SubscribeOptions options;
   
   igtl::Socket* socket;
-  
-  virtual void callback(const typename MessageType::ConstPtr& msg);
-  
+  ros::CallbackQueue queue;
   
 };
 

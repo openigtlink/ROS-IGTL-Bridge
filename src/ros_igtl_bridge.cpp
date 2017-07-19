@@ -44,11 +44,12 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
       }
     }
   ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");	
-  //MessageConverterPoint* mcpoint = new MessageConverterPoint(nh);
-  MessageConverterPoint mcpoint;
-  mcpoint.setNodeHandle(nh);
-  mcpoint.setSocket(socket);
-  mcpoint.start();
+  this->mcpoint = new MessageConverterPoint;
+  mcpoint->setNodeHandle(nh);
+  mcpoint->setSocket(socket);
+  mcpoint->setTopicPublish("IGTL_POINT_IN");
+  mcpoint->setTopicSubscribe("IGTL_POINT_OUT");
+  mcpoint->start();
 
   // declare publisher 
   //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
@@ -181,11 +182,11 @@ void ROS_IGTL_Bridge::transformCallback(const ros_igtl_bridge::igtltransform::Co
   SendTransform(msg->name.c_str(),Transformation);
 }
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::pointCallback(const ros_igtl_bridge::igtlpoint::ConstPtr& msg)
-{
-  SendPoint(msg->name.c_str(),msg->pointdata);
-}	
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::pointCallback(const ros_igtl_bridge::igtlpoint::ConstPtr& msg)
+//{
+//  SendPoint(msg->name.c_str(),msg->pointdata);
+//}	
 
 //----------------------------------------------------------------------	
 void ROS_IGTL_Bridge::pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg)
@@ -241,7 +242,8 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
     // DATATYPE POINT ----------------------------------------------
     if (strcmp(headerMsg->GetDeviceType(), "POINT") == 0)
       {
-      ReceivePoints(headerMsg);
+	//ReceivePoints(headerMsg);
+	this->mcpoint->onIGTLMessage(headerMsg);
       }
     // DATATYPE STRING ---------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
@@ -332,21 +334,21 @@ void ROS_IGTL_Bridge::ReceiveTransform(igtl::MessageHeader * header)
     }
 }
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::SendPoint (const char* name,geometry_msgs::Point point)
-{
-  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
-  pointMsg->SetDeviceName(name);
-  
-  igtl::PointElement::Pointer pointE; 
-  pointE = igtl::PointElement::New();
-  pointE->SetPosition(point.x, point.y,point.z);
-  
-  pointMsg->AddPointElement(pointE);
-  
-  pointMsg->Pack();
-  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::SendPoint (const char* name,geometry_msgs::Point point)
+//{
+//  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
+//  pointMsg->SetDeviceName(name);
+//  
+//  igtl::PointElement::Pointer pointE; 
+//  pointE = igtl::PointElement::New();
+//  pointE->SetPosition(point.x, point.y,point.z);
+//  
+//  pointMsg->AddPointElement(pointE);
+//  
+//  pointMsg->Pack();
+//  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
+//}
 
 //----------------------------------------------------------------------
 void ROS_IGTL_Bridge::SendPointCloud (const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg)
@@ -372,49 +374,49 @@ void ROS_IGTL_Bridge::SendPointCloud (const ros_igtl_bridge::igtlpointcloud::Con
   socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
 }
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::ReceivePoints(igtl::MessageHeader * header)
-{	
-  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
-  pointMsg->SetMessageHeader(header);
-  pointMsg->AllocatePack();
-  
-  socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize());
-  int c = pointMsg->Unpack(1);
-  
-  if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
-    {
-    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: POINT.");
-    return;
-    }
-  
-  int npoints = pointMsg->GetNumberOfPointElement ();
-  
-  if (npoints > 0)
-    {
-    for (int i = 0; i < npoints; i ++)
-      {
-      igtlFloat32 point[3];
-      igtl::PointElement::Pointer elem = igtl::PointElement::New();
-      pointMsg->GetPointElement (i,elem);
-      elem->GetPosition(point);
-      
-      ros_igtl_bridge::igtlpoint msg;
-      
-      msg.pointdata.x = point[0];
-      msg.pointdata.y = point[1];
-      msg.pointdata.z = point[2];
-      msg.name = elem->GetName();
-      
-      point_pub.publish(msg);
-      }
-    }
-  else
-    {
-    ROS_ERROR("[ROS-IGTL-Bridge] Message POINT is empty");
-    return;
-    }
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::ReceivePoints(igtl::MessageHeader * header)
+//{	
+//  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
+//  pointMsg->SetMessageHeader(header);
+//  pointMsg->AllocatePack();
+//  
+//  socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize());
+//  int c = pointMsg->Unpack(1);
+//  
+//  if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
+//    {
+//    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: POINT.");
+//    return;
+//    }
+//  
+//  int npoints = pointMsg->GetNumberOfPointElement ();
+//  
+//  if (npoints > 0)
+//    {
+//    for (int i = 0; i < npoints; i ++)
+//      {
+//      igtlFloat32 point[3];
+//      igtl::PointElement::Pointer elem = igtl::PointElement::New();
+//      pointMsg->GetPointElement (i,elem);
+//      elem->GetPosition(point);
+//      
+//      ros_igtl_bridge::igtlpoint msg;
+//      
+//      msg.pointdata.x = point[0];
+//      msg.pointdata.y = point[1];
+//      msg.pointdata.z = point[2];
+//      msg.name = elem->GetName();
+//      
+//      point_pub.publish(msg);
+//      }
+//    }
+//  else
+//    {
+//    ROS_ERROR("[ROS-IGTL-Bridge] Message POINT is empty");
+//    return;
+//    }
+//}
 
 //----------------------------------------------------------------------
 void ROS_IGTL_Bridge::SendImage(ros_igtl_bridge::igtlimage::ConstPtr imgmsg)

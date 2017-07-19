@@ -11,26 +11,22 @@
 
 =========================================================================*/
 
-#include <ros/callback_queue.h>
-#include "boost/bind.hpp"
+#ifndef __MessageConverterPoint_TXX
+#define __MessageConverterPoint_TXX
 
+#include "boost/bind.hpp"
 
 template <typename MessageType>
 MessageConverterBase<MessageType>::MessageConverterBase()
 {
-  this->topicPublish = this->defaultTopicPublish();
-  this->topicSubscribe = this->defaultTopicSubscribe();
   this->nodeHandle = NULL;
 }
 
 template <typename MessageType>
 MessageConverterBase<MessageType>::MessageConverterBase(ros::NodeHandle *nh)
 {
-  this->topicPublish = this->defaultTopicPublish();
-  this->topicSubscribe = this->defaultTopicSubscribe();
   this->setNodeHandle(nh);
 }
-
 
 template <typename MessageType>
 MessageConverterBase<MessageType>::MessageConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
@@ -45,7 +41,6 @@ MessageConverterBase<MessageType>::~MessageConverterBase()
 {
 }
 
-
 template <typename MessageType>
 void MessageConverterBase<MessageType>::setNodeHandle(ros::NodeHandle* nh)
 {
@@ -56,29 +51,25 @@ void MessageConverterBase<MessageType>::setNodeHandle(ros::NodeHandle* nh)
 template <typename MessageType>
 bool MessageConverterBase<MessageType>::start()
 {
-  if (this->nodeHandle)
-    {
-      // TODO: Queue size (second argument) should be configurable
-      this->publisher = nodeHandle->advertise<MessageType>(this->topicPublish, 10);
-
-      ros::CallbackQueue queue;
-      this->options =
-	ros::SubscribeOptions::create<MessageType>(this->topicSubscribe,
-						   10, // queue length
-						   boost::bind(&MessageConverterBase<MessageType>::callback, this, _1),
-						   //stringCallback<MessageType>,
-						   ros::VoidPtr(), // tracked object, we don't need one thus NULL
-						   &queue // pointer to callback queue object
-						   );
-
-      this->subscriber = nodeHandle->subscribe(options);
-      return true;
-    }
-  else
+  if (!this->nodeHandle)
     {
       return false;
     }
   
+  // TODO: Queue size (second argument) should be configurable
+  this->publisher = nodeHandle->advertise<MessageType>(this->topicPublish, 10);
+  std::cerr << "TOPIC: " << this->topicSubscribe << std::endl;
+  
+  this->options =
+    ros::SubscribeOptions::create<MessageType>(this->topicSubscribe,
+					       10, // queue length
+					       boost::bind(&MessageConverterBase<MessageType>::onROSMessage, this, _1),
+					       ros::VoidPtr(), // tracked object, we don't need one thus NULL
+					       &this->queue // pointer to callback queue object
+					       );
+  
+  this->subscriber = nodeHandle->subscribe(options);
+  return true;
 }
 
 template <typename MessageType>
@@ -99,8 +90,5 @@ void MessageConverterBase<MessageType>::setSocket(igtl::Socket * socket)
   this->socket = socket;
 }
 
-template<typename MessageType>
-void MessageConverterBase<MessageType>::callback(const typename MessageType::ConstPtr& msg)
-{
-}
+#endif // __MessageConverterPoint_TXX
 
