@@ -36,14 +36,14 @@ protected:
   virtual void onROSMessage(const typename MessageType::ConstPtr& msg) = 0;
 
 public:
-  void setNodeHandle(ros::NodeHandle* nh);
-  void setTopicPublish(const char* topic);
-  void setTopicSubscribe(const char* topic);
-  void setQueueSize(uint32_t size) {this->queueSize = size; };
+  void setNodeHandle(ros::NodeHandle* nh) { this->nodeHandle = nh; }
+  void setSocket(igtl::Socket * socket) { this->socket = socket; }
+  void setQueueSize(uint32_t size) { this->queueSize = size; }
+  void setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize);
 
-  virtual void setSocket(igtl::Socket * socket);
-
-  bool start();
+  bool publish(const char* topic);
+  bool subscribe(const char* topic);
+  
   
 protected:
 

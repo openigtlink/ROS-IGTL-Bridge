@@ -46,18 +46,14 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
     }
   ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");	
   this->mcpoint = new MessageConverterPoint;
-  mcpoint->setNodeHandle(nh);
-  mcpoint->setSocket(socket);
-  mcpoint->setTopicPublish("IGTL_POINT_IN");
-  mcpoint->setTopicSubscribe("IGTL_POINT_OUT");
-  mcpoint->start();
+  mcpoint->setup(nh, socket, 10);
+  mcpoint->publish("IGTL_POINT_IN");
+  mcpoint->subscribe("IGTL_POINT_OUT");
 
   this->mctransform = new MessageConverterTransform;
-  mctransform->setNodeHandle(nh);
-  mctransform->setSocket(socket);
-  mctransform->setTopicPublish("IGTL_TRANSFORM_IN");
-  mctransform->setTopicSubscribe("IGTL_TRANSFORM_OUT");
-  mctransform->start();
+  mctransform->setup(nh, socket, 10);
+  mctransform->publish("IGTL_TRANSFORM_IN");
+  mctransform->subscribe("IGTL_TRANSFORM_OUT");
 
   // declare publisher 
   //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  

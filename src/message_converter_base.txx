@@ -42,53 +42,68 @@ MessageConverterBase<MessageType>::~MessageConverterBase()
 }
 
 template <typename MessageType>
-void MessageConverterBase<MessageType>::setNodeHandle(ros::NodeHandle* nh)
-{
-  this->nodeHandle = nh;
-}
-
-
-template <typename MessageType>
-bool MessageConverterBase<MessageType>::start()
+bool MessageConverterBase<MessageType>::publish(const char* topic)
 {
   if (!this->nodeHandle)
     {
       return false;
     }
   
+  if (!topic)
+    {
+      this->topicPublish = topic;
+    }
+  
   // TODO: Queue size (second argument) should be configurable
-  this->publisher = nodeHandle->advertise<MessageType>(this->topicPublish, 10);
+  this->publisher = nodeHandle->advertise<MessageType>(this->topicPublish, this->queueSize);
   std::cerr << "TOPIC: " << this->topicSubscribe << std::endl;
   
-  this->options =
-    ros::SubscribeOptions::create<MessageType>(this->topicSubscribe,
-					       10, // queue length
-					       boost::bind(&MessageConverterBase<MessageType>::onROSMessage, this, _1),
-					       ros::VoidPtr(), // tracked object, we don't need one thus NULL
-					       &this->queue // pointer to callback queue object
-					       );
+  return true;
+}
+
   
-  this->subscriber = nodeHandle->subscribe(options);
+template <typename MessageType>
+bool MessageConverterBase<MessageType>::subscribe(const char* topic)
+{
+  if (!this->nodeHandle)
+    {
+      return false;
+    }
+  
+  if (!topic)
+    {
+      this->topicSubscribe = topic;
+    }
+
+  this->options =
+    ros::SubscribeOptions::create<MessageType>(
+       this->topicSubscribe,
+       this->queueSize, // queue length
+       boost::bind(&MessageConverterBase<MessageType>::onROSMessage, this, _1),
+       ros::VoidPtr(), // tracked object, we don't need one thus NULL
+       &this->queue // pointer to callback queue object
+      );
+  this->subscriber = this->nodeHandle->subscribe(options);
+
   return true;
 }
 
 template <typename MessageType>
-void MessageConverterBase<MessageType>::setTopicPublish(const char* topic)
+void MessageConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize)
 {
-  this->topicPublish = topic;
+  this->setNodeHandle(nh);
+  this->setSocket(socket);
+  this->setQueueSize(queueSize);
 }
 
-template <typename MessageType>
-void MessageConverterBase<MessageType>::setTopicSubscribe(const char* topic)
-{
-  this->topicSubscribe = topic;
-}
-
-template <typename MessageType>
-void MessageConverterBase<MessageType>::setSocket(igtl::Socket * socket)
-{
-  this->socket = socket;
-}
+//template <typename MessageType>
+//void MessageConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, const char* topicSubscribe, const char* topicPublish)
+//{
+//  this->nodeHandle = nh;
+//  this->socket = socket;
+//  this->topicSubscribe = topicSubscribe;
+//  this->topicPublish = topicPublish;
+//}
 
 #endif // __MessageConverterPoint_TXX
 
