@@ -95,7 +95,8 @@ void ROS_IGTL_Test::polydataCallback(const ros_igtl_bridge::igtlpolydata::ConstP
 {
   ROS_INFO("[ROS_IGTL_Test] PolyData %s received: \n",msg->name.c_str());
   vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-  ROS_IGTL_Bridge::MsgToPolyData(msg,polydata);
+  // TODO: Remove the dependency on ROS_IGTL_Bridge::msgToPolyData();
+  //ROS_IGTL_Bridge::msgToPolyData(msg,polydata);
   std::cout<<"Number of Points "<<polydata->GetNumberOfPoints()<<std::endl;
   std::cout<<"Number of Strips "<<polydata->GetNumberOfStrips()<<std::endl;
   Show_Polydata(polydata);
@@ -194,10 +195,11 @@ void ROS_IGTL_Test::test_sending()
       polydata_reader->SetFileName(test_pd.c_str());
       polydata_reader->Update();
       polydata = polydata_reader->GetOutput();
-		
-      ros_igtl_bridge::igtlpolydata::Ptr polydata_msg (new ros_igtl_bridge::igtlpolydata()); 
-      *polydata_msg =  ROS_IGTL_Bridge::PolyDataToMsg("ROS_IGTL_Test_PolyData",polydata);
-      polydata_pub.publish(*polydata_msg);
+
+      // TODO: Remove the dependency on ROS_IGTL_Bridge::PolyDataToMs()
+      //ros_igtl_bridge::igtlpolydata::Ptr polydata_msg (new ros_igtl_bridge::igtlpolydata());
+      //*polydata_msg =  ROS_IGTL_Bridge::PolyDataToMsg("ROS_IGTL_Test_PolyData",polydata);
+      //polydata_pub.publish(*polydata_msg);
     }
   std::string test_oct;
   if(nh->getParam("/test_oct",test_oct))
