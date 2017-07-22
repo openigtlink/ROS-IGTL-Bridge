@@ -4,6 +4,7 @@
 #include "message_converter_point.h"
 #include "message_converter_transform.h"
 #include "message_converter_polydata.h"
+#include "message_converter_string.h"
 
 
 //----------------------------------------------------------------------
@@ -63,19 +64,23 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   mcpolydata->publish("IGTL_POLYDATA_IN");
   mcpolydata->subscribe("IGTL_POLYDATA_OUT");
 
+  this->mcstring = new MessageConverterString;
+  mcstring->setup(nh, socket, 10);
+  mcstring->publish("IGTL_STRING_IN");
+  mcstring->subscribe("IGTL_STRING_OUT");
   
   // declare publisher 
   //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
   //transform_pub = nh->advertise<ros_igtl_bridge::igtltransform>("IGTL_TRANSFORM_IN", 10);
   //polydata_pub = nh->advertise<ros_igtl_bridge::igtlpolydata>("IGTL_POLYDATA_IN", 1);
-  string_pub = nh->advertise<ros_igtl_bridge::igtlstring>("IGTL_STRING_IN", 10);
+  //string_pub = nh->advertise<ros_igtl_bridge::igtlstring>("IGTL_STRING_IN", 10);
   image_pub = nh->advertise<sensor_msgs::Image>("IGTL_IMAGE_IN", 3);
   
   // declare subscriber
   //sub_point = nh->subscribe("IGTL_POINT_OUT", 10, &ROS_IGTL_Bridge::pointCallback,this);  
   sub_pointcloud = nh->subscribe("IGTL_POINTCLOUD_OUT", 2, &ROS_IGTL_Bridge::pointcloudCallback,this);  
   //sub_transform = nh->subscribe("IGTL_TRANSFORM_OUT", 10, &ROS_IGTL_Bridge::transformCallback,this);  
-  sub_string = nh->subscribe("IGTL_STRING_OUT", 20, &ROS_IGTL_Bridge::stringCallback,this); 
+  //sub_string = nh->subscribe("IGTL_STRING_OUT", 20, &ROS_IGTL_Bridge::stringCallback,this); 
   sub_image = nh->subscribe("IGTL_IMAGE_OUT", 1, &ROS_IGTL_Bridge::imageCallback,this); 
   sub_video = nh->subscribe("IGTL_VIDEO_OUT", 1, &ROS_IGTL_Bridge::videoCallback,this); 
   //sub_polydata = nh->subscribe("IGTL_POLYDATA_OUT", 1, &ROS_IGTL_Bridge::polydataCallback,this); 
@@ -207,11 +212,11 @@ void ROS_IGTL_Bridge::pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::
   SendPointCloud(msg);
 }
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg)
-{
-  SendString(msg->name.c_str(), msg->data);
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg)
+//{
+//  SendString(msg->name.c_str(), msg->data);
+//}
 
 //----------------------------------------------------------------------
 void ROS_IGTL_Bridge::imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg)
@@ -261,7 +266,8 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
     // DATATYPE STRING ---------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
       {
-        ReceiveString(headerMsg);
+        //ReceiveString(headerMsg);
+        this->mcstring->onIGTLMessage(headerMsg);
       }
     // DATATYPE TRANSFORM ------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
@@ -829,45 +835,46 @@ void ROS_IGTL_Bridge::ReceiveImage(igtl::MessageHeader * header)
 //
 //}
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::SendString(const char* name, std::string stringmsg)
-{
-  igtl::StringMessage::Pointer stringMsg = igtl::StringMessage::New();
-  stringMsg->SetDeviceName(name);
-  stringMsg->SetString(stringmsg.c_str());  
-  stringMsg->Pack();
-  //std::cout<<stringmsg.c_str()<< " sent"<<std::endl;
-  socket->Send(stringMsg->GetPackPointer(), stringMsg->GetPackSize());
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::SendString(const char* name, std::string stringmsg)
+//{
+//  igtl::StringMessage::Pointer stringMsg = igtl::StringMessage::New();
+//  stringMsg->SetDeviceName(name);
+//  stringMsg->SetString(stringmsg.c_str());  
+//  stringMsg->Pack();
+//  //std::cout<<stringmsg.c_str()<< " sent"<<std::endl;
+//  socket->Send(stringMsg->GetPackPointer(), stringMsg->GetPackSize());
+//}
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::ReceiveString(igtl::MessageHeader * header)
-{
-  // Create a message buffer to receive string data
-  igtl::StringMessage::Pointer stringMsg;
-  stringMsg = igtl::StringMessage::New();
-  stringMsg->SetMessageHeader(header);
-  stringMsg->AllocatePack();
-
-  // Receive string data from the socket
-  socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
-
-  int b = stringMsg->Unpack(1);
-  ros_igtl_bridge::igtlstring msg;
-	
-  if (b & igtl::MessageHeader::UNPACK_BODY) 
-    {
-    //std::cout<< "Received String: "<<stringMsg->GetString()<<std::endl;     
-    msg.name = stringMsg->GetDeviceName();
-    msg.data = stringMsg->GetString();
-    string_pub.publish(msg);
-    }
-  else 
-    {
-    std::cerr << "CRC Check failed!" << std::endl;
-    return ;
-    }
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::ReceiveString(igtl::MessageHeader * header)
+//{
+//  // Create a message buffer to receive string data
+//  igtl::StringMessage::Pointer stringMsg;
+//  stringMsg = igtl::StringMessage::New();
+//  stringMsg->SetMessageHeader(header);
+//  stringMsg->AllocatePack();
+//
+//  // Receive string data from the socket
+//  socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+//
+//  int b = stringMsg->Unpack(1);
+//  ros_igtl_bridge::igtlstring msg;
+//	
+//  if (b & igtl::MessageHeader::UNPACK_BODY) 
+//    {
+//    //std::cout<< "Received String: "<<stringMsg->GetString()<<std::endl;     
+//    msg.name = stringMsg->GetDeviceName();
+//    msg.data = stringMsg->GetString();
+//    string_pub.publish(msg);
+//    }
+//  else 
+//    {
+//    std::cerr << "CRC Check failed!" << std::endl;
+//    return ;
+//    }
+//
+//}
 
 //// Polydata/Msg conversions
 ////----------------------------------------------------------------------

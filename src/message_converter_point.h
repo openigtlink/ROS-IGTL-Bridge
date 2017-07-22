@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  Program:   Converter Base Class
+  Program:   Converter Class for Point
   Language:  C++
 
   Copyright (c) Brigham and Women's Hospital. All rights reserved.

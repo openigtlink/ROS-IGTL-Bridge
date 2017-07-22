@@ -56,7 +56,8 @@
 
 class MessageConverterPoint;
 class MessageConverterTransform;
-class MessageConverterPolyData; 
+class MessageConverterPolyData;
+class MessageConverterString;
 
 class ROS_IGTL_Bridge
 {
@@ -81,25 +82,26 @@ private:
   //ros::Publisher transform_pub;
   //ros::Publisher polydata_pub;
   ros::Publisher image_pub;
-  ros::Publisher string_pub;
+  //ros::Publisher string_pub;
   ros::Subscriber sub_point;
   ros::Subscriber sub_pointcloud;
   //ros::Subscriber sub_transform;
   //ros::Subscriber sub_polydata;
   ros::Subscriber sub_image;
   ros::Subscriber sub_video;
-  ros::Subscriber sub_string;
+  //ros::Subscriber sub_string;
 
   MessageConverterPoint* mcpoint;
   MessageConverterTransform* mctransform;
   MessageConverterPolyData* mcpolydata;
+  MessageConverterString* mcstring;
   
   // Callbacks
   virtual void IGTLReceiverThread();
   //virtual void pointCallback(const ros_igtl_bridge::igtlpoint::ConstPtr& msg);
   virtual void pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg);
   //virtual void transformCallback(const ros_igtl_bridge::igtltransform::ConstPtr& msg);
-  virtual void stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg);
+  //virtual void stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg);
   virtual void imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg);
   virtual void videoCallback(sensor_msgs::Image::ConstPtr msg);
   //virtual void polydataCallback(const ros_igtl_bridge::igtlpolydata::ConstPtr& msg);
@@ -111,13 +113,13 @@ private:
   virtual void SendImage(ros_igtl_bridge::igtlimage::ConstPtr imgmsg);
   virtual void SendVideo(sensor_msgs::Image::ConstPtr imgmsg);
   //virtual void SendPolyData(const char* name,vtkSmartPointer<vtkPolyData> polydata);
-  virtual void SendString(const char* name, std::string stringmsg);
+  //virtual void SendString(const char* name, std::string stringmsg);
   
   // Receiving
   //virtual void ReceivePoints(igtl::MessageHeader * header);
   virtual void ReceiveImage(igtl::MessageHeader * header);
   //virtual void ReceiveTransform(igtl::MessageHeader * header);
   //virtual void ReceivePolyData(igtl::MessageHeader * header,vtkSmartPointer<vtkPolyData> poly);
-  virtual void ReceiveString(igtl::MessageHeader * header);	
+  //virtual void ReceiveString(igtl::MessageHeader * header);	
 };
 #endif 
