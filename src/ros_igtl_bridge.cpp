@@ -5,6 +5,7 @@
 #include "message_converter_transform.h"
 #include "message_converter_polydata.h"
 #include "message_converter_string.h"
+#include "message_converter_image.h"
 
 
 //----------------------------------------------------------------------
@@ -68,20 +69,25 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   mcstring->setup(nh, socket, 10);
   mcstring->publish("IGTL_STRING_IN");
   mcstring->subscribe("IGTL_STRING_OUT");
+
+  this->mcimage = new MessageConverterImage;
+  mcimage->setup(nh, socket, 10);
+  mcimage->publish("IGTL_IMAGE_IN");
+  mcimage->subscribe("IGTL_IMAGE_OUT");
   
   // declare publisher 
   //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
   //transform_pub = nh->advertise<ros_igtl_bridge::igtltransform>("IGTL_TRANSFORM_IN", 10);
   //polydata_pub = nh->advertise<ros_igtl_bridge::igtlpolydata>("IGTL_POLYDATA_IN", 1);
   //string_pub = nh->advertise<ros_igtl_bridge::igtlstring>("IGTL_STRING_IN", 10);
-  image_pub = nh->advertise<sensor_msgs::Image>("IGTL_IMAGE_IN", 3);
+  //image_pub = nh->advertise<sensor_msgs::Image>("IGTL_IMAGE_IN", 3);
   
   // declare subscriber
   //sub_point = nh->subscribe("IGTL_POINT_OUT", 10, &ROS_IGTL_Bridge::pointCallback,this);  
   sub_pointcloud = nh->subscribe("IGTL_POINTCLOUD_OUT", 2, &ROS_IGTL_Bridge::pointcloudCallback,this);  
   //sub_transform = nh->subscribe("IGTL_TRANSFORM_OUT", 10, &ROS_IGTL_Bridge::transformCallback,this);  
   //sub_string = nh->subscribe("IGTL_STRING_OUT", 20, &ROS_IGTL_Bridge::stringCallback,this); 
-  sub_image = nh->subscribe("IGTL_IMAGE_OUT", 1, &ROS_IGTL_Bridge::imageCallback,this); 
+  //sub_image = nh->subscribe("IGTL_IMAGE_OUT", 1, &ROS_IGTL_Bridge::imageCallback,this); 
   sub_video = nh->subscribe("IGTL_VIDEO_OUT", 1, &ROS_IGTL_Bridge::videoCallback,this); 
   //sub_polydata = nh->subscribe("IGTL_POLYDATA_OUT", 1, &ROS_IGTL_Bridge::polydataCallback,this); 
   
@@ -218,11 +224,11 @@ void ROS_IGTL_Bridge::pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::
 //  SendString(msg->name.c_str(), msg->data);
 //}
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg)
-{
-  SendImage(msg);
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg)
+//{
+//  SendImage(msg);
+//}
 
 //----------------------------------------------------------------------
 void ROS_IGTL_Bridge::videoCallback(sensor_msgs::Image::ConstPtr msg)
@@ -283,9 +289,11 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
         this->mcpolydata->onIGTLMessage(headerMsg);
       }
     // DATATYPE IMAGE -------------------------------------------
-    else if (strcmp(headerMsg->GetDeviceType(), "IMAGE") == 0){
-    ReceiveImage(headerMsg);
-    }
+    else if (strcmp(headerMsg->GetDeviceType(), "IMAGE") == 0)
+      {
+        //ReceiveImage(headerMsg);
+        this->mcimage->onIGTLMessage(headerMsg);
+      }
     // SKIP DATA 
     else
       {
@@ -439,35 +447,35 @@ void ROS_IGTL_Bridge::SendPointCloud (const ros_igtl_bridge::igtlpointcloud::Con
 //    }
 //}
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::SendImage(ros_igtl_bridge::igtlimage::ConstPtr imgmsg)
-{
-  int   size[]     = {imgmsg->z_steps,imgmsg->y_steps,imgmsg->x_steps};       // image dimension
-  float spacing[]  = {imgmsg->z_spacing,imgmsg->y_spacing,imgmsg->x_spacing};     // spacing (mm/pixel) 
-  int   scalarType = igtl::ImageMessage::TYPE_UINT8;
-  
-  igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
-  imgMsg->SetDimensions(size);
-  imgMsg->SetSpacing(spacing);
-  imgMsg->SetScalarType(scalarType);
-  imgMsg->SetCoordinateSystem(2);
-  imgMsg->SetDeviceName(imgmsg->name.c_str());
-  imgMsg->SetOrigin(0,0,0);
-  imgMsg->AllocateScalars();
-  //-----------------------------------------------------------
-  
-  memcpy(imgMsg->GetScalarPointer(),(char*)(&imgmsg->data[0]),imgmsg->data.size());
-  
-  igtl::Matrix4x4 matrixa;
-  igtl::IdentityMatrix(matrixa);
-  imgMsg->SetMatrix(matrixa);
-  
-  //------------------------------------------------------------
-  // Pack and send
-  imgMsg->Pack();
-  
-  socket->Send(imgMsg->GetPackPointer(), imgMsg->GetPackSize());
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::SendImage(ros_igtl_bridge::igtlimage::ConstPtr imgmsg)
+//{
+//  int   size[]     = {imgmsg->z_steps,imgmsg->y_steps,imgmsg->x_steps};       // image dimension
+//  float spacing[]  = {imgmsg->z_spacing,imgmsg->y_spacing,imgmsg->x_spacing};     // spacing (mm/pixel) 
+//  int   scalarType = igtl::ImageMessage::TYPE_UINT8;
+//  
+//  igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
+//  imgMsg->SetDimensions(size);
+//  imgMsg->SetSpacing(spacing);
+//  imgMsg->SetScalarType(scalarType);
+//  imgMsg->SetCoordinateSystem(2);
+//  imgMsg->SetDeviceName(imgmsg->name.c_str());
+//  imgMsg->SetOrigin(0,0,0);
+//  imgMsg->AllocateScalars();
+//  //-----------------------------------------------------------
+//  
+//  memcpy(imgMsg->GetScalarPointer(),(char*)(&imgmsg->data[0]),imgmsg->data.size());
+//  
+//  igtl::Matrix4x4 matrixa;
+//  igtl::IdentityMatrix(matrixa);
+//  imgMsg->SetMatrix(matrixa);
+//  
+//  //------------------------------------------------------------
+//  // Pack and send
+//  imgMsg->Pack();
+//  
+//  socket->Send(imgMsg->GetPackPointer(), imgMsg->GetPackSize());
+//}
 
 //----------------------------------------------------------------------
 void ROS_IGTL_Bridge::SendVideo(sensor_msgs::Image::ConstPtr imgmsg)
@@ -539,47 +547,47 @@ void ROS_IGTL_Bridge::SendVideo(sensor_msgs::Image::ConstPtr imgmsg)
   socket->Send(imgMsg->GetPackPointer(), imgMsg->GetPackSize());
 }
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::ReceiveImage(igtl::MessageHeader * header)
-{
-  igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
-  imgMsg->SetMessageHeader(header);
-  imgMsg->AllocatePack();
-
-  socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize());
-  int c = imgMsg->Unpack(1);
-  
-  if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
-    {
-    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: IMAGE.");
-    return;
-    }
-  
-  std::vector<uint8_t> image;
-  sensor_msgs::ImagePtr img_msg  (new sensor_msgs::Image()) ;
-  
-  float spacing[] = {0,0,0};
-  imgMsg->GetSpacing(spacing);
-  
-  int   imgsize[] = {0,0,0};
-  imgMsg->GetDimensions(imgsize);
-  img_msg->height = imgsize[1];
-  img_msg->width = imgsize[0];
-  
-  ROS_INFO("h %d",img_msg->height);
-  ROS_INFO("w %d",img_msg->width);
-  
-  img_msg->encoding = "mono8";
-  img_msg->is_bigendian = false;
-  img_msg->step = imgsize[0];
-  ROS_INFO("s %d",img_msg->step);
-  size_t size = img_msg->step* img_msg->height;
-  img_msg->data.resize(size);
-  
-  memcpy((char*)(&img_msg->data[0]),imgMsg->GetScalarPointer(),size); 
-  
-  image_pub.publish(img_msg);
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::ReceiveImage(igtl::MessageHeader * header)
+//{
+//  igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
+//  imgMsg->SetMessageHeader(header);
+//  imgMsg->AllocatePack();
+//
+//  socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize());
+//  int c = imgMsg->Unpack(1);
+//  
+//  if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
+//    {
+//    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: IMAGE.");
+//    return;
+//    }
+//  
+//  std::vector<uint8_t> image;
+//  sensor_msgs::ImagePtr img_msg  (new sensor_msgs::Image()) ;
+//  
+//  float spacing[] = {0,0,0};
+//  imgMsg->GetSpacing(spacing);
+//  
+//  int   imgsize[] = {0,0,0};
+//  imgMsg->GetDimensions(imgsize);
+//  img_msg->height = imgsize[1];
+//  img_msg->width = imgsize[0];
+//  
+//  ROS_INFO("h %d",img_msg->height);
+//  ROS_INFO("w %d",img_msg->width);
+//  
+//  img_msg->encoding = "mono8";
+//  img_msg->is_bigendian = false;
+//  img_msg->step = imgsize[0];
+//  ROS_INFO("s %d",img_msg->step);
+//  size_t size = img_msg->step* img_msg->height;
+//  img_msg->data.resize(size);
+//  
+//  memcpy((char*)(&img_msg->data[0]),imgMsg->GetScalarPointer(),size); 
+//  
+//  image_pub.publish(img_msg);
+//}
 
 ////----------------------------------------------------------------------
 //void ROS_IGTL_Bridge::SendPolyData(const char* name,vtkSmartPointer<vtkPolyData> polydata)
