@@ -55,6 +55,7 @@
 
 
 class MessageConverterPoint;
+class MessageConverterPointCloud;
 class MessageConverterTransform;
 class MessageConverterPolyData;
 class MessageConverterString;
@@ -85,7 +86,7 @@ private:
   ros::Publisher image_pub;
   //ros::Publisher string_pub;
   //ros::Subscriber sub_point;
-  ros::Subscriber sub_pointcloud;
+  //ros::Subscriber sub_pointcloud;
   //ros::Subscriber sub_transform;
   //ros::Subscriber sub_polydata;
   //ros::Subscriber sub_image;
@@ -95,13 +96,14 @@ private:
   MessageConverterPoint* mcpoint;
   MessageConverterTransform* mctransform;
   MessageConverterPolyData* mcpolydata;
+  MessageConverterPointCloud* mcpointcloud;
   MessageConverterString* mcstring;
   MessageConverterImage* mcimage;
   
   // Callbacks
   virtual void IGTLReceiverThread();
   //virtual void pointCallback(const ros_igtl_bridge::igtlpoint::ConstPtr& msg);
-  virtual void pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg);
+  //virtual void pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg);
   //virtual void transformCallback(const ros_igtl_bridge::igtltransform::ConstPtr& msg);
   //virtual void stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg);
   //virtual void imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg);
@@ -111,7 +113,7 @@ private:
   // Sending
   //virtual void SendTransform(const char* name, igtl::Matrix4x4 &sendMatrix);
   //virtual void SendPoint (const char* name,geometry_msgs::Point point);
-  virtual void SendPointCloud (const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg);
+  //virtual void SendPointCloud (const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg);
   //virtual void SendImage(ros_igtl_bridge::igtlimage::ConstPtr imgmsg);
   virtual void SendVideo(sensor_msgs::Image::ConstPtr imgmsg);
   //virtual void SendPolyData(const char* name,vtkSmartPointer<vtkPolyData> polydata);

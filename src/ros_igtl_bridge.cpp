@@ -2,6 +2,7 @@
 #include "ShowPolyData.h"
 
 #include "message_converter_point.h"
+#include "message_converter_pointcloud.h"
 #include "message_converter_transform.h"
 #include "message_converter_polydata.h"
 #include "message_converter_string.h"
@@ -74,7 +75,12 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   mcimage->setup(nh, socket, 10);
   mcimage->publish("IGTL_IMAGE_IN");
   mcimage->subscribe("IGTL_IMAGE_OUT");
-  
+
+  this->mcpointcloud = new MessageConverterPointCloud;
+  mcpointcloud->setup(nh, socket, 10);
+  mcpointcloud->publish("IGTL_POINTCLOUD_IN");
+  mcpointcloud->subscribe("IGTL_POINTCLOUD_OUT");
+
   // declare publisher 
   //point_pub = nh->advertise<ros_igtl_bridge::igtlpoint>("IGTL_POINT_IN", 10);  
   //transform_pub = nh->advertise<ros_igtl_bridge::igtltransform>("IGTL_TRANSFORM_IN", 10);
@@ -84,7 +90,7 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   
   // declare subscriber
   //sub_point = nh->subscribe("IGTL_POINT_OUT", 10, &ROS_IGTL_Bridge::pointCallback,this);  
-  sub_pointcloud = nh->subscribe("IGTL_POINTCLOUD_OUT", 2, &ROS_IGTL_Bridge::pointcloudCallback,this);  
+  //sub_pointcloud = nh->subscribe("IGTL_POINTCLOUD_OUT", 2, &ROS_IGTL_Bridge::pointcloudCallback,this);  
   //sub_transform = nh->subscribe("IGTL_TRANSFORM_OUT", 10, &ROS_IGTL_Bridge::transformCallback,this);  
   //sub_string = nh->subscribe("IGTL_STRING_OUT", 20, &ROS_IGTL_Bridge::stringCallback,this); 
   //sub_image = nh->subscribe("IGTL_IMAGE_OUT", 1, &ROS_IGTL_Bridge::imageCallback,this); 
@@ -212,11 +218,11 @@ void ROS_IGTL_Bridge::ConnectToIGTLServer()
 //  SendPoint(msg->name.c_str(),msg->pointdata);
 //}	
 
-//----------------------------------------------------------------------	
-void ROS_IGTL_Bridge::pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg)
-{
-  SendPointCloud(msg);
-}
+////----------------------------------------------------------------------	
+//void ROS_IGTL_Bridge::pointcloudCallback(const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg)
+//{
+//  SendPointCloud(msg);
+//}
 
 ////----------------------------------------------------------------------
 //void ROS_IGTL_Bridge::stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg)
@@ -379,29 +385,29 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
 //  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
 //}
 
-//----------------------------------------------------------------------
-void ROS_IGTL_Bridge::SendPointCloud (const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg)
-{
-  int pcl_size = msg->pointdata.size();
-  if (!pcl_size) 
-    {
-    ROS_ERROR("[ROS-IGTL-Bridge] Pointcloud is empty!");
-    return;
-    }
-  
-  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
-  pointMsg->SetDeviceName(msg->name.c_str());
-  
-  for (int i = 0; i<pcl_size;i++)
-    {
-    igtl::PointElement::Pointer pointE; 
-    pointE = igtl::PointElement::New();
-    pointE->SetPosition(msg->pointdata[i].x, msg->pointdata[i].y,msg->pointdata[i].z);		
-    pointMsg->AddPointElement(pointE);
-    }
-  pointMsg->Pack();
-  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
-}
+////----------------------------------------------------------------------
+//void ROS_IGTL_Bridge::SendPointCloud (const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg)
+//{
+//  int pcl_size = msg->pointdata.size();
+//  if (!pcl_size) 
+//    {
+//    ROS_ERROR("[ROS-IGTL-Bridge] Pointcloud is empty!");
+//    return;
+//    }
+//  
+//  igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
+//  pointMsg->SetDeviceName(msg->name.c_str());
+//  
+//  for (int i = 0; i<pcl_size;i++)
+//    {
+//    igtl::PointElement::Pointer pointE; 
+//    pointE = igtl::PointElement::New();
+//    pointE->SetPosition(msg->pointdata[i].x, msg->pointdata[i].y,msg->pointdata[i].z);		
+//    pointMsg->AddPointElement(pointE);
+//    }
+//  pointMsg->Pack();
+//  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
+//}
 
 ////----------------------------------------------------------------------
 //void ROS_IGTL_Bridge::ReceivePoints(igtl::MessageHeader * header)
