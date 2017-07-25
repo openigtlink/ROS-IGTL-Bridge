@@ -60,6 +60,8 @@ class MessageConverterTransform;
 class MessageConverterPolyData;
 class MessageConverterString;
 class MessageConverterImage;
+class MessageConverterVideo;
+
 
 class ROS_IGTL_Bridge
 {
@@ -90,7 +92,7 @@ private:
   //ros::Subscriber sub_transform;
   //ros::Subscriber sub_polydata;
   //ros::Subscriber sub_image;
-  ros::Subscriber sub_video;
+  //ros::Subscriber sub_video;
   //ros::Subscriber sub_string;
 
   MessageConverterPoint* mcpoint;
@@ -107,7 +109,7 @@ private:
   //virtual void transformCallback(const ros_igtl_bridge::igtltransform::ConstPtr& msg);
   //virtual void stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg);
   //virtual void imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg);
-  virtual void videoCallback(sensor_msgs::Image::ConstPtr msg);
+  //virtual void videoCallback(sensor_msgs::Image::ConstPtr msg);
   //virtual void polydataCallback(const ros_igtl_bridge::igtlpolydata::ConstPtr& msg);
   
   // Sending
@@ -115,7 +117,7 @@ private:
   //virtual void SendPoint (const char* name,geometry_msgs::Point point);
   //virtual void SendPointCloud (const ros_igtl_bridge::igtlpointcloud::ConstPtr& msg);
   //virtual void SendImage(ros_igtl_bridge::igtlimage::ConstPtr imgmsg);
-  virtual void SendVideo(sensor_msgs::Image::ConstPtr imgmsg);
+  //virtual void SendVideo(sensor_msgs::Image::ConstPtr imgmsg);
   //virtual void SendPolyData(const char* name,vtkSmartPointer<vtkPolyData> polydata);
   //virtual void SendString(const char* name, std::string stringmsg);
   
