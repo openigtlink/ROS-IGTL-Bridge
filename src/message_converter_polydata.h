@@ -8,14 +8,36 @@
   This software is distributed WITHOUT ANY WARRANTY; without even
   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
   PURPOSE.  See the above copyright notices for more information.
-
+d
 =========================================================================*/
 
 #ifndef __MessageConverterPolyData_H
 #define __MessageConverterPolyData_H
 
-#include "ros/ros.h"
 #include "message_converter_base.h"
+
+// ROS header files
+#include "ros/ros.h"
+
+// ROS message header files
+#include "ros_igtl_bridge/igtlpolydata.h"
+
+// VTK header files
+#include <vtkCellArray.h>
+#include <vtkIdList.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolygon.h>
+#include <vtkVertex.h>
+#include <vtkPolyLine.h>
+#include <vtkTriangleStrip.h>
+#include <vtkFloatArray.h>
+#include <vtkTransform.h>
+
+
+// OpenIGTLink message files
+#include "igtlPolyDataMessage.h"
 
 class MessageConverterPolyData : public MessageConverterBase<ros_igtl_bridge::igtlpolydata>
 {

@@ -14,8 +14,18 @@
 #ifndef __MessageConverterString_H
 #define __MessageConverterString_H
 
-#include "ros/ros.h"
 #include "message_converter_base.h"
+
+// ROS header files
+#include "ros/ros.h"
+
+// ROS message header files
+#include "ros_igtl_bridge/igtlstring.h"
+#include "std_msgs/String.h"
+
+// OpenIGTLink message files
+#include "igtlStringMessage.h"
+
 
 class MessageConverterString : public MessageConverterBase<ros_igtl_bridge::igtlstring>
 {

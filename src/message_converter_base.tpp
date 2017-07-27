@@ -14,7 +14,7 @@
 #ifndef __MessageConverterPoint_TXX
 #define __MessageConverterPoint_TXX
 
-#include "boost/bind.hpp"
+#include <boost/bind.hpp>
 
 template <typename MessageType>
 MessageConverterBase<MessageType>::MessageConverterBase()

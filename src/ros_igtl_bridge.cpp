@@ -1,4 +1,6 @@
-#include <ros_igtl_bridge.h>
+#include <boost/thread.hpp>
+
+#include "eros_igtl_bridge.h"
 #include "ShowPolyData.h"
 
 #include "message_converter_point.h"
@@ -72,12 +74,12 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   mcstring->subscribe("IGTL_STRING_OUT");
 
   this->mcimage = new MessageConverterImage;
-  mcimage->setup(nh, socket, 10);
+  mcimage->setup(nh, socket, 5);
   mcimage->publish("IGTL_IMAGE_IN");
   mcimage->subscribe("IGTL_IMAGE_OUT");
 
   this->mcpointcloud = new MessageConverterPointCloud;
-  mcpointcloud->setup(nh, socket, 10);
+  mcpointcloud->setup(nh, socket, 5);
   mcpointcloud->publish("IGTL_POINTCLOUD_IN");
   mcpointcloud->subscribe("IGTL_POINTCLOUD_OUT");
 

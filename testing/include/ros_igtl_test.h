@@ -13,6 +13,14 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+// Messages Includes
+#include "ros_igtl_bridge/igtltransform.h"
+#include "ros_igtl_bridge/igtlpoint.h"
+#include "ros_igtl_bridge/igtlpointcloud.h"
+#include "ros_igtl_bridge/igtlpolydata.h"
+#include "ros_igtl_bridge/igtlimage.h"
+#include "ros_igtl_bridge/igtlstring.h"
+
 // VTK Includes
 #include <vtkCellArray.h>
 #include <vtkIdList.h>

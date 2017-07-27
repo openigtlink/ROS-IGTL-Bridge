@@ -133,9 +133,9 @@ include_directories(include ${OpenIGTLink_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}_lib
-   	src/ros_igtl_bridge.cpp
-	include/ros_igtl_bridge.h
-
+  include/ros_igtl_bridge.h
+  src/message_converter_image.cpp
+  src/ros_igtl_bridge.cpp
  )
 
 ## Declare a C++ executable
@@ -158,6 +158,7 @@ add_dependencies(${PROJECT_NAME}_lib ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES}  )
 target_link_libraries(${PROJECT_NAME}_node ${VTK_LIBRARIES})
 target_link_libraries(${PROJECT_NAME}_node OpenIGTLink)
+target_link_libraries(${PROJECT_NAME}_node ${PROJECT_NAME}_lib)
 
 
 target_link_libraries(${PROJECT_NAME}_lib ${catkin_LIBRARIES})
@@ -166,7 +167,11 @@ target_link_libraries(${PROJECT_NAME}_lib OpenIGTLink)
 
 target_link_libraries(${PROJECT_NAME}_test ${catkin_LIBRARIES}  )
 target_link_libraries(${PROJECT_NAME}_test ${VTK_LIBRARIES})
-target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME}_lib)
+
+## TODO: Remove the dependency on OpenIGTLink
+target_link_libraries(${PROJECT_NAME}_test OpenIGTLink)
+
+#target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME}_lib)
 
 #############
 ## Install ##

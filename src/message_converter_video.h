@@ -14,8 +14,24 @@
 #ifndef __MessageConverterVideo_H
 #define __MessageConverterVideo_H
 
-#include "ros/ros.h"
 #include "message_converter_base.h"
+
+// ROS header files
+#include "ros/ros.h"
+
+// ROS message header files
+#include "ros_igtl_bridge/igtlvidel.h"
+#include "image_transport/image_transport.h"
+#include "cv_bridge/cv_bridge.h"
+#include "sensor_msgs/image_encodings.h"
+
+// OpenCV header files
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+// OpenIGTLink message files
+#include "igtlImageMessage.h"
+
 
 class MessageConverterVideo : public MessageConverterBase<ros_igtl_bridge::igtlvideo>
 {

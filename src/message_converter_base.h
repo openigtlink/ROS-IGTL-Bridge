@@ -15,7 +15,9 @@
 #define __MessageConverterBase_H
 
 #include "ros/ros.h"
-#include <ros/callback_queue.h>
+#include "ros/callback_queue.h"
+#include "igtlMessageHeader.h"
+#include "igtlSocket.h"
 
 template <typename MessageType>
 class MessageConverterBase
@@ -65,7 +67,7 @@ protected:
 };
 
   
-#include "message_converter_base.txx"
+#include "message_converter_base.tpp"
 
 
 #endif // __MessageConverter_H

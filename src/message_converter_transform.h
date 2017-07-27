@@ -14,8 +14,18 @@
 #ifndef __MessageConverterTransform_H
 #define __MessageConverterTransform_H
 
-#include "ros/ros.h"
 #include "message_converter_base.h"
+
+// ROS header files
+#include "ros/ros.h"
+
+// ROS message header files
+#include "ros_igtl_bridge/igtltransform.h"
+#include "geometry_msgs/Transform.h"
+
+
+// OpenIGTLink message files
+#include "igtlTransformMessage.h"
 
 class MessageConverterTransform : public MessageConverterBase<ros_igtl_bridge::igtltransform>
 {

@@ -14,8 +14,16 @@
 #ifndef __MessageConverterPointCloud_H
 #define __MessageConverterPointCloud_H
 
-#include "ros/ros.h"
 #include "message_converter_base.h"
+
+// ROS header files
+#include "ros/ros.h"
+
+// ROS message header files
+#include "ros_igtl_bridge/igtlpointcloud.h"
+
+// OpenIGTLink message files
+
 
 class MessageConverterPointCloud : public MessageConverterBase<ros_igtl_bridge::igtlpointcloud>
 {
