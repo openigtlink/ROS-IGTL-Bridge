@@ -16,17 +16,17 @@
 #include "igtlTransformMessage.h"
 
 RIBConverterTransform::RIBConverterTransform()
-  : RIBConverterBase<ros_igtl_bridge::igtltransform>()
+  : RIBConverter<ros_igtl_bridge::igtltransform>()
 {
 }
 
 RIBConverterTransform::RIBConverterTransform(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtltransform>(nh)
+  : RIBConverter<ros_igtl_bridge::igtltransform>(nh)
 {
 }
 
 RIBConverterTransform::RIBConverterTransform(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtltransform>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtltransform>(topicPublish, topicSubscribe, nh)
 {
 }
 

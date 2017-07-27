@@ -17,17 +17,17 @@
 
 
 RIBConverterPointCloud::RIBConverterPointCloud()
-  : RIBConverterBase<ros_igtl_bridge::igtlpointcloud>()
+  : RIBConverter<ros_igtl_bridge::igtlpointcloud>()
 {
 }
 
 RIBConverterPointCloud::RIBConverterPointCloud(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlpointcloud>(nh)
+  : RIBConverter<ros_igtl_bridge::igtlpointcloud>(nh)
 {
 }
 
 RIBConverterPointCloud::RIBConverterPointCloud(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlpointcloud>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtlpointcloud>(topicPublish, topicSubscribe, nh)
 {
 }
 

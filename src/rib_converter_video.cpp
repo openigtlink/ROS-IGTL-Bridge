@@ -16,17 +16,17 @@
 #include "igtlImageMessage.h"
 
 RIBConverterVideo::RIBConverterVideo()
-  : RIBConverterBase<ros_igtl_bridge::igtlvideo>()
+  : RIBConverter<ros_igtl_bridge::igtlvideo>()
 {
 }
 
 RIBConverterVideo::RIBConverterVideo(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlvideo>(nh)
+  : RIBConverter<ros_igtl_bridge::igtlvideo>(nh)
 {
 }
 
 RIBConverterVideo::RIBConverterVideo(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlvideo>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtlvideo>(topicPublish, topicSubscribe, nh)
 {
 }
 

@@ -17,17 +17,17 @@
 #include "igtlImageMessage.h"
 
 RIBConverterImage::RIBConverterImage()
-  : RIBConverterBase<ros_igtl_bridge::igtlimage>()
+  : RIBConverter<ros_igtl_bridge::igtlimage>()
 {
 }
 
 RIBConverterImage::RIBConverterImage(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlimage>(nh)
+  : RIBConverter<ros_igtl_bridge::igtlimage>(nh)
 {
 }
 
 RIBConverterImage::RIBConverterImage(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlimage>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtlimage>(topicPublish, topicSubscribe, nh)
 {
 }
 

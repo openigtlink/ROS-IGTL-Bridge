@@ -14,7 +14,7 @@
 #ifndef __RIBConverterPolyData_H
 #define __RIBConverterPolyData_H
 
-#include "rib_converter_base.h"
+#include "rib_converter.h"
 
 // ROS header files
 #include "ros/ros.h"
@@ -30,7 +30,7 @@
 #include "igtlMessageHeader.h"
 
 
-class RIBConverterPolyData : public RIBConverterBase<ros_igtl_bridge::igtlpolydata>
+class RIBConverterPolyData : public RIBConverter<ros_igtl_bridge::igtlpolydata>
 {
 
 public:

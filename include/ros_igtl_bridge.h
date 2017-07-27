@@ -15,7 +15,6 @@
 #include <sstream>
 #include <stdint.h>
 
-
 class RIBConverterPoint;
 class RIBConverterPointCloud;
 class RIBConverterTransform;
@@ -23,7 +22,6 @@ class RIBConverterPolyData;
 class RIBConverterString;
 class RIBConverterImage;
 class RIBConverterVideo;
-
 
 class ROS_IGTL_Bridge
 {

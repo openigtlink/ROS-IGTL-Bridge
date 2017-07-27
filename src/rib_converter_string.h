@@ -14,7 +14,7 @@
 #ifndef __RIBConverterString_H
 #define __RIBConverterString_H
 
-#include "rib_converter_base.h"
+#include "rib_converter.h"
 
 // ROS header files
 #include "ros/ros.h"
@@ -26,7 +26,7 @@
 // OpenIGTLink message files
 #include "igtlMessageHeader.h"
 
-class RIBConverterString : public RIBConverterBase<ros_igtl_bridge::igtlstring>
+class RIBConverterString : public RIBConverter<ros_igtl_bridge::igtlstring>
 {
 
 public:

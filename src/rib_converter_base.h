@@ -19,7 +19,6 @@
 #include "igtlMessageHeader.h"
 #include "igtlSocket.h"
 
-template <typename MessageType>
 class RIBConverterBase
 {
 
@@ -35,7 +34,7 @@ public:
 public:
   virtual int onIGTLMessage(igtl::MessageHeader * header) = 0;
 protected:
-  virtual void onROSMessage(const typename MessageType::ConstPtr& msg) = 0;
+  //virtual void onROSMessage(const typename MessageType::ConstPtr& msg) = 0;
 
 public:
   void setNodeHandle(ros::NodeHandle* nh) { this->nodeHandle = nh; }
@@ -43,8 +42,8 @@ public:
   void setQueueSize(uint32_t size) { this->queueSize = size; }
   void setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize);
 
-  bool publish(const char* topic);
-  bool subscribe(const char* topic);
+  virtual bool publish(const char* topic) = 0;
+  virtual bool subscribe(const char* topic) = 0;
   
   
 protected:
@@ -65,9 +64,5 @@ protected:
   ros::CallbackQueue queue;
   
 };
-
-  
-#include "rib_converter_base.tpp"
-
 
 #endif // __RIBConverter_H

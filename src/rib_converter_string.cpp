@@ -16,17 +16,17 @@
 #include "igtlStringMessage.h"
 
 RIBConverterString::RIBConverterString()
-  : RIBConverterBase<ros_igtl_bridge::igtlstring>()
+  : RIBConverter<ros_igtl_bridge::igtlstring>()
 {
 }
 
 RIBConverterString::RIBConverterString(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlstring>(nh)
+  : RIBConverter<ros_igtl_bridge::igtlstring>(nh)
 {
 }
 
 RIBConverterString::RIBConverterString(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlstring>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtlstring>(topicPublish, topicSubscribe, nh)
 {
 }
 

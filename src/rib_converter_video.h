@@ -14,7 +14,7 @@
 #ifndef __RIBConverterVideo_H
 #define __RIBConverterVideo_H
 
-#include "rib_converter_base.h"
+#include "rib_converter.h"
 
 // ROS header files
 #include "ros/ros.h"
@@ -33,7 +33,7 @@
 #include "igtlMessageHeader.h"
 
 
-class RIBConverterVideo : public RIBConverterBase<ros_igtl_bridge::igtlvideo>
+class RIBConverterVideo : public RIBConverter<ros_igtl_bridge::igtlvideo>
 {
 
 public:

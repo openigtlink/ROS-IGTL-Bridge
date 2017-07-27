@@ -27,17 +27,17 @@
 #include <vtkTransform.h>
 
 RIBConverterPolyData::RIBConverterPolyData()
-  : RIBConverterBase<ros_igtl_bridge::igtlpolydata>()
+  : RIBConverter<ros_igtl_bridge::igtlpolydata>()
 {
 }
 
 RIBConverterPolyData::RIBConverterPolyData(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlpolydata>(nh)
+  : RIBConverter<ros_igtl_bridge::igtlpolydata>(nh)
 {
 }
 
 RIBConverterPolyData::RIBConverterPolyData(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlpolydata>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtlpolydata>(topicPublish, topicSubscribe, nh)
 {
 }
 

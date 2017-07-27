@@ -17,32 +17,30 @@
 #include <boost/bind.hpp>
 
 template <typename MessageType>
-RIBConverterBase<MessageType>::RIBConverterBase()
-{
-  this->nodeHandle = NULL;
-}
-
-template <typename MessageType>
-RIBConverterBase<MessageType>::RIBConverterBase(ros::NodeHandle *nh)
-{
-  this->setNodeHandle(nh);
-}
-
-template <typename MessageType>
-RIBConverterBase<MessageType>::RIBConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-{
-  this->topicPublish = topicPublish;
-  this->topicSubscribe = topicSubscribe;
-  this->setNodeHandle(nh);
-}
-
-template <typename MessageType>
-RIBConverterBase<MessageType>::~RIBConverterBase()
+RIBConverter<MessageType>::RIBConverter()
+  : RIBConverterBase()
 {
 }
 
 template <typename MessageType>
-bool RIBConverterBase<MessageType>::publish(const char* topic)
+RIBConverter<MessageType>::RIBConverter(ros::NodeHandle *nh)
+  : RIBConverterBase(nh)
+{
+}
+
+template <typename MessageType>
+RIBConverter<MessageType>::RIBConverter(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase(topicPublish, topicSubscribe, nh)
+{
+}
+
+template <typename MessageType>
+RIBConverter<MessageType>::~RIBConverter()
+{
+}
+
+template <typename MessageType>
+bool RIBConverter<MessageType>::publish(const char* topic)
 {
   if (!this->nodeHandle)
     {
@@ -63,7 +61,7 @@ bool RIBConverterBase<MessageType>::publish(const char* topic)
 
   
 template <typename MessageType>
-bool RIBConverterBase<MessageType>::subscribe(const char* topic)
+bool RIBConverter<MessageType>::subscribe(const char* topic)
 {
   if (!this->nodeHandle)
     {
@@ -79,7 +77,7 @@ bool RIBConverterBase<MessageType>::subscribe(const char* topic)
     ros::SubscribeOptions::create<MessageType>(
        this->topicSubscribe,
        this->queueSize, // queue length
-       boost::bind(&RIBConverterBase<MessageType>::onROSMessage, this, _1),
+       boost::bind(&RIBConverter<MessageType>::onROSMessage, this, _1),
        ros::VoidPtr(), // tracked object, we don't need one thus NULL
        &this->queue // pointer to callback queue object
       );
@@ -88,14 +86,13 @@ bool RIBConverterBase<MessageType>::subscribe(const char* topic)
   return true;
 }
 
-template <typename MessageType>
-void RIBConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize)
-{
-  this->setNodeHandle(nh);
-  this->setSocket(socket);
-  this->setQueueSize(queueSize);
-}
-
+//template <typename MessageType>
+//void RIBConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize)
+//{
+//  this->setNodeHandle(nh);
+//  this->setSocket(socket);
+//  this->setQueueSize(queueSize);
+//}
 //template <typename MessageType>
 //void RIBConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, const char* topicSubscribe, const char* topicPublish)
 //{

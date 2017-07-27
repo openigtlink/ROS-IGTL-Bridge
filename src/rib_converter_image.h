@@ -14,7 +14,7 @@
 #ifndef __RIBConverterImage_H
 #define __RIBConverterImage_H
 
-#include "rib_converter_base.h"
+#include "rib_converter.h"
 
 // ROS header files
 #include "sensor_msgs/Image.h"
@@ -26,7 +26,7 @@
 #include "igtlStringMessage.h"
 
 
-class RIBConverterImage : public RIBConverterBase<ros_igtl_bridge::igtlimage>
+class RIBConverterImage : public RIBConverter<ros_igtl_bridge::igtlimage>
 {
 
 public:

@@ -16,17 +16,17 @@
 #include "igtlPointMessage.h"
 
 RIBConverterPoint::RIBConverterPoint()
-  : RIBConverterBase<ros_igtl_bridge::igtlpoint>()
+  : RIBConverter<ros_igtl_bridge::igtlpoint>()
 {
 }
 
 RIBConverterPoint::RIBConverterPoint(ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlpoint>(nh)
+  : RIBConverter<ros_igtl_bridge::igtlpoint>(nh)
 {
 }
 
 RIBConverterPoint::RIBConverterPoint(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : RIBConverterBase<ros_igtl_bridge::igtlpoint>(topicPublish, topicSubscribe, nh)
+  : RIBConverter<ros_igtl_bridge::igtlpoint>(topicPublish, topicSubscribe, nh)
 {
 }
 
