@@ -23,6 +23,7 @@
 #include "ros_igtl_bridge/igtlimage.h"
 
 // OpenIGTLink message files
+#include "igtlStringMessage.h"
 
 
 class MessageConverterImage : public MessageConverterBase<ros_igtl_bridge::igtlimage>

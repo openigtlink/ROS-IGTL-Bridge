@@ -135,6 +135,12 @@ include_directories(include ${OpenIGTLink_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR
 add_library(${PROJECT_NAME}_lib
   include/ros_igtl_bridge.h
   src/message_converter_image.cpp
+  src/message_converter_pointcloud.cpp
+  src/message_converter_point.cpp
+  src/message_converter_polydata.cpp
+  src/message_converter_string.cpp
+  src/message_converter_transform.cpp
+  src/message_converter_image.cpp
   src/ros_igtl_bridge.cpp
  )
 

@@ -1,6 +1,6 @@
 #include <boost/thread.hpp>
 
-#include "eros_igtl_bridge.h"
+#include "ros_igtl_bridge.h"
 #include "ShowPolyData.h"
 
 #include "message_converter_point.h"

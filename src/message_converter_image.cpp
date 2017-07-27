@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  Program:   Converter Base Class
+  Program:   Converter Class for Image
   Language:  C++
 
   Copyright (c) Brigham and Women's Hospital. All rights reserved.
@@ -13,7 +13,7 @@
 
 #include "message_converter_image.h"
 #include "ros/ros.h"
-#include "igtlMessageHeader.h"
+
 #include "igtlImageMessage.h"
 
 MessageConverterImage::MessageConverterImage()
