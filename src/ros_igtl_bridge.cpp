@@ -53,35 +53,54 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   
   ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");
   
-  this->ribcpoint = new RIBConverterPoint;
-  ribcpoint->setup(nh, socket, 10);
-  ribcpoint->publish("IGTL_POINT_IN");
-  ribcpoint->subscribe("IGTL_POINT_OUT");
+  //this->ribcpoint = new RIBConverterPoint;
+  //ribcpoint->setup(nh, socket, 10);
+  //ribcpoint->publish("IGTL_POINT_IN");
+  //ribcpoint->subscribe("IGTL_POINT_OUT");
+  //
+  //this->ribctransform = new RIBConverterTransform;
+  //ribctransform->setup(nh, socket, 10);
+  //ribctransform->publish("IGTL_TRANSFORM_IN");
+  //ribctransform->subscribe("IGTL_TRANSFORM_OUT");
+  //
+  //this->ribcpolydata = new RIBConverterPolyData;
+  //ribcpolydata->setup(nh, socket, 10);
+  //ribcpolydata->publish("IGTL_POLYDATA_IN");
+  //ribcpolydata->subscribe("IGTL_POLYDATA_OUT");
+  //
+  //this->ribcstring = new RIBConverterString;
+  //ribcstring->setup(nh, socket, 10);
+  //ribcstring->publish("IGTL_STRING_IN");
+  //ribcstring->subscribe("IGTL_STRING_OUT");
+  //
+  //this->ribcimage = new RIBConverterImage;
+  //ribcimage->setup(nh, socket, 5);
+  //ribcimage->publish("IGTL_IMAGE_IN");
+  //ribcimage->subscribe("IGTL_IMAGE_OUT");
+  //
+  //this->ribcpointcloud = new RIBConverterPointCloud;
+  //ribcpointcloud->setup(nh, socket, 5);
+  //ribcpointcloud->publish("IGTL_POINTCLOUD_IN");
+  //ribcpointcloud->subscribe("IGTL_POINTCLOUD_OUT");
 
-  this->ribctransform = new RIBConverterTransform;
-  ribctransform->setup(nh, socket, 10);
-  ribctransform->publish("IGTL_TRANSFORM_IN");
-  ribctransform->subscribe("IGTL_TRANSFORM_OUT");
+
+  RIBConverterPoint * point = new RIBConverterPoint;
+  this->AddConverter(point, 10, "IGTL_POINT_IN", "IGTL_POINT_OUT");
   
-  this->ribcpolydata = new RIBConverterPolyData;
-  ribcpolydata->setup(nh, socket, 10);
-  ribcpolydata->publish("IGTL_POLYDATA_IN");
-  ribcpolydata->subscribe("IGTL_POLYDATA_OUT");
+  RIBConverterTransform* transform = new RIBConverterTransform;
+  this->AddConverter(transform, 10, "IGTL_TRANSFORM_IN", "IGTL_TRANSFORM_OUT");
+  
+  RIBConverterPolyData* polydata = new RIBConverterPolyData;
+  this->AddConverter(polydata, 10, "IGTL_POLYDATA_IN", "IGTL_POLYDATA_OUT");
 
-  this->ribcstring = new RIBConverterString;
-  ribcstring->setup(nh, socket, 10);
-  ribcstring->publish("IGTL_STRING_IN");
-  ribcstring->subscribe("IGTL_STRING_OUT");
+  RIBConverterString* string = new RIBConverterString;
+  this->AddConverter(string, 10, "IGTL_STRING_IN", "IGTL_STRING_OUT");
 
-  this->ribcimage = new RIBConverterImage;
-  ribcimage->setup(nh, socket, 5);
-  ribcimage->publish("IGTL_IMAGE_IN");
-  ribcimage->subscribe("IGTL_IMAGE_OUT");
+  RIBConverterImage* image = new RIBConverterImage;
+  this->AddConverter(image, 10, "IGTL_IMAGE_IN", "IGTL_IMAGE_OUT");
 
-  this->ribcpointcloud = new RIBConverterPointCloud;
-  ribcpointcloud->setup(nh, socket, 5);
-  ribcpointcloud->publish("IGTL_POINTCLOUD_IN");
-  ribcpointcloud->subscribe("IGTL_POINTCLOUD_OUT");
+  RIBConverterPointCloud* pointcloud = new RIBConverterPointCloud;
+  this->AddConverter(pointcloud, 10, "IGTL_POINTCLOUD_IN", "IGTL_POINTCLOUD_OUT");
 
   // start receiver thread
   boost::thread* receiver_thread = new boost::thread(boost::bind(&ROS_IGTL_Bridge::IGTLReceiverThread, this));  
@@ -105,6 +124,7 @@ igtl::Socket::Pointer ROS_IGTL_Bridge::GetSocketPointer()
   igtl::Socket::Pointer socket_ptr = static_cast<igtl::Socket::Pointer>(socket);
   return socket_ptr;
 }
+
 
 //----------------------------------------------------------------------
 void ROS_IGTL_Bridge::CreateIGTLServer()
@@ -192,36 +212,62 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
       continue;
     
     headerMsg->Unpack();
-    // DATATYPE POINT ----------------------------------------------
-    if (strcmp(headerMsg->GetDeviceType(), "POINT") == 0)
+    
+    std::vector< RIBConverterBase* >::iterator iter;
+    for (iter = this->converters.begin(); iter != this->converters.end(); iter ++)
       {
-	this->ribcpoint->onIGTLMessage(headerMsg);
+        if (strcmp(headerMsg->GetDeviceType(), (*iter)->messageTypeString()) == 0)
+          {
+            (*iter)->onIGTLMessage(headerMsg);
+            break;
+          }
       }
-    // DATATYPE STRING ---------------------------------------------
-    else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
+    if (iter == this->converters.end())
       {
-        this->ribcstring->onIGTLMessage(headerMsg);
-      }
-    // DATATYPE TRANSFORM ------------------------------------------
-    else if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
-      { 
-	this->ribctransform->onIGTLMessage(headerMsg);
-      }
-    // DATATYPE POLYDATA -------------------------------------------
-    else if (strcmp(headerMsg->GetDeviceType(), "POLYDATA") == 0)
-      {
-        this->ribcpolydata->onIGTLMessage(headerMsg);
-      }
-    // DATATYPE IMAGE -------------------------------------------
-    else if (strcmp(headerMsg->GetDeviceType(), "IMAGE") == 0)
-      {
-        this->ribcimage->onIGTLMessage(headerMsg);
-      }
-    // SKIP DATA 
-    else
-      {
-      socket->Skip(headerMsg->GetBodySizeToRead(),0);
+        socket->Skip(headerMsg->GetBodySizeToRead(),0);
       }
     }
+    
+    //// DATATYPE POINT ----------------------------------------------
+    //if (strcmp(headerMsg->GetDeviceType(), "POINT") == 0)
+    //  {
+    //    this->ribcpoint->onIGTLMessage(headerMsg);
+    //  }
+    //// DATATYPE STRING ---------------------------------------------
+    //else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
+    //  {
+    //    this->ribcstring->onIGTLMessage(headerMsg);
+    //  }
+    //// DATATYPE TRANSFORM ------------------------------------------
+    //else if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
+    //  { 
+    //    this->ribctransform->onIGTLMessage(headerMsg);
+    //  }
+    //// DATATYPE POLYDATA -------------------------------------------
+    //else if (strcmp(headerMsg->GetDeviceType(), "POLYDATA") == 0)
+    //  {
+    //    this->ribcpolydata->onIGTLMessage(headerMsg);
+    //  }
+    //// DATATYPE IMAGE -------------------------------------------
+    //else if (strcmp(headerMsg->GetDeviceType(), "IMAGE") == 0)
+    //  {
+    //    this->ribcimage->onIGTLMessage(headerMsg);
+    //  }
+    //// SKIP DATA 
+    //else
+    //  {
+    //  socket->Skip(headerMsg->GetBodySizeToRead(),0);
+    //  }
+    //}
 }
+
+
+void ROS_IGTL_Bridge::AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe)
+{
+  converter->setup(this->nh, this->socket, size);
+  converter->publish(topicPublish);
+  converter->subscribe(topicSubscribe);
+  this->converters.push_back(converter);
+}
+
 
