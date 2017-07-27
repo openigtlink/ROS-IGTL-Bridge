@@ -11,8 +11,8 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterBase_H
-#define __MessageConverterBase_H
+#ifndef __RIBConverterBase_H
+#define __RIBConverterBase_H
 
 #include "ros/ros.h"
 #include "ros/callback_queue.h"
@@ -20,13 +20,13 @@
 #include "igtlSocket.h"
 
 template <typename MessageType>
-class MessageConverterBase
+class RIBConverterBase
 {
 
 public:
-  MessageConverterBase();
-  MessageConverterBase(ros::NodeHandle *nh);
-  MessageConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterBase();
+  RIBConverterBase(ros::NodeHandle *nh);
+  RIBConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }
@@ -49,7 +49,7 @@ public:
   
 protected:
 
-  ~MessageConverterBase();
+  ~RIBConverterBase();
 
   uint32_t    queueSize;
   
@@ -67,7 +67,7 @@ protected:
 };
 
   
-#include "message_converter_base.tpp"
+#include "rib_converter_base.tpp"
 
 
-#endif // __MessageConverter_H
+#endif // __RIBConverter_H

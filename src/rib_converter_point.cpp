@@ -11,26 +11,26 @@
 
 =========================================================================*/
 
-#include "message_converter_point.h"
+#include "rib_converter_point.h"
 #include "ros/ros.h"
 #include "igtlPointMessage.h"
 
-MessageConverterPoint::MessageConverterPoint()
-  : MessageConverterBase<ros_igtl_bridge::igtlpoint>()
+RIBConverterPoint::RIBConverterPoint()
+  : RIBConverterBase<ros_igtl_bridge::igtlpoint>()
 {
 }
 
-MessageConverterPoint::MessageConverterPoint(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlpoint>(nh)
+RIBConverterPoint::RIBConverterPoint(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlpoint>(nh)
 {
 }
 
-MessageConverterPoint::MessageConverterPoint(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlpoint>(topicPublish, topicSubscribe, nh)
+RIBConverterPoint::RIBConverterPoint(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlpoint>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
 {
   igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
   pointMsg->SetMessageHeader(header);
@@ -76,7 +76,7 @@ int MessageConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
   
 }
 
-void MessageConverterPoint::onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr & msg)
+void RIBConverterPoint::onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr & msg)
 {
   geometry_msgs::Point point = msg->pointdata;
   

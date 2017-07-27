@@ -11,32 +11,32 @@
 
 =========================================================================*/
 
-#include "message_converter_pointcloud.h"
+#include "rib_converter_pointcloud.h"
 #include "ros/ros.h"
 #include "igtlPointMessage.h"
 
 
-MessageConverterPointCloud::MessageConverterPointCloud()
-  : MessageConverterBase<ros_igtl_bridge::igtlpointcloud>()
+RIBConverterPointCloud::RIBConverterPointCloud()
+  : RIBConverterBase<ros_igtl_bridge::igtlpointcloud>()
 {
 }
 
-MessageConverterPointCloud::MessageConverterPointCloud(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlpointcloud>(nh)
+RIBConverterPointCloud::RIBConverterPointCloud(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlpointcloud>(nh)
 {
 }
 
-MessageConverterPointCloud::MessageConverterPointCloud(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlpointcloud>(topicPublish, topicSubscribe, nh)
+RIBConverterPointCloud::RIBConverterPointCloud(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlpointcloud>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterPointCloud::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterPointCloud::onIGTLMessage(igtl::MessageHeader * header)
 {
   
 }
 
-void MessageConverterPointCloud::onROSMessage(const ros_igtl_bridge::igtlpointcloud::ConstPtr & msg)
+void RIBConverterPointCloud::onROSMessage(const ros_igtl_bridge::igtlpointcloud::ConstPtr & msg)
 {
   
   int pcl_size = msg->pointdata.size();

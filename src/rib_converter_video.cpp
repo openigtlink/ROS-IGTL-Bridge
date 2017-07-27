@@ -11,30 +11,30 @@
 
 =========================================================================*/
 
-#include "message_converter_transform.h"
+#include "rib_converter_transform.h"
 #include "ros/ros.h"
 #include "igtlImageMessage.h"
 
-MessageConverterVideo::MessageConverterVideo()
-  : MessageConverterBase<ros_igtl_bridge::igtlvideo>()
+RIBConverterVideo::RIBConverterVideo()
+  : RIBConverterBase<ros_igtl_bridge::igtlvideo>()
 {
 }
 
-MessageConverterVideo::MessageConverterVideo(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlvideo>(nh)
+RIBConverterVideo::RIBConverterVideo(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlvideo>(nh)
 {
 }
 
-MessageConverterVideo::MessageConverterVideo(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlvideo>(topicPublish, topicSubscribe, nh)
+RIBConverterVideo::RIBConverterVideo(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlvideo>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterVideo::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterVideo::onIGTLMessage(igtl::MessageHeader * header)
 {
 }
 
-void MessageConverterVideo::onROSMessage(const ros_igtl_bridge::igtlvideo::ConstPtr & msg)
+void RIBConverterVideo::onROSMessage(const ros_igtl_bridge::igtlvideo::ConstPtr & msg)
 {
   cv_bridge::CvImagePtr cv_ptr;
   try

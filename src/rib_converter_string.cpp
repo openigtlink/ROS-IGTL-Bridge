@@ -11,26 +11,26 @@
 
 =========================================================================*/
 
-#include "message_converter_string.h"
+#include "rib_converter_string.h"
 #include "ros/ros.h"
 #include "igtlStringMessage.h"
 
-MessageConverterString::MessageConverterString()
-  : MessageConverterBase<ros_igtl_bridge::igtlstring>()
+RIBConverterString::RIBConverterString()
+  : RIBConverterBase<ros_igtl_bridge::igtlstring>()
 {
 }
 
-MessageConverterString::MessageConverterString(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlstring>(nh)
+RIBConverterString::RIBConverterString(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlstring>(nh)
 {
 }
 
-MessageConverterString::MessageConverterString(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlstring>(topicPublish, topicSubscribe, nh)
+RIBConverterString::RIBConverterString(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlstring>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterString::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterString::onIGTLMessage(igtl::MessageHeader * header)
 {
   // Create a message buffer to receive string data
   igtl::StringMessage::Pointer stringMsg;
@@ -60,7 +60,7 @@ int MessageConverterString::onIGTLMessage(igtl::MessageHeader * header)
     }
 }
 
-void MessageConverterString::onROSMessage(const ros_igtl_bridge::igtlstring::ConstPtr & msg)
+void RIBConverterString::onROSMessage(const ros_igtl_bridge::igtlstring::ConstPtr & msg)
 {
   //  SendString(msg->name.c_str(), msg->data);
   igtl::StringMessage::Pointer stringMsg = igtl::StringMessage::New();

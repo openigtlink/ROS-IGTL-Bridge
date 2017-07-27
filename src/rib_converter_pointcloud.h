@@ -11,10 +11,10 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterPointCloud_H
-#define __MessageConverterPointCloud_H
+#ifndef __RIBConverterPointCloud_H
+#define __RIBConverterPointCloud_H
 
-#include "message_converter_base.h"
+#include "rib_converter_base.h"
 
 // ROS header files
 #include "ros/ros.h"
@@ -26,13 +26,13 @@
 #include "igtlStringMessage.h"
 
 
-class MessageConverterPointCloud : public MessageConverterBase<ros_igtl_bridge::igtlpointcloud>
+class RIBConverterPointCloud : public RIBConverterBase<ros_igtl_bridge::igtlpointcloud>
 {
 
 public:
-  MessageConverterPointCloud();
-  MessageConverterPointCloud(ros::NodeHandle *nh);
-  MessageConverterPointCloud(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterPointCloud();
+  RIBConverterPointCloud(ros::NodeHandle *nh);
+  RIBConverterPointCloud(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }

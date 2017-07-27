@@ -11,10 +11,10 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterVideo_H
-#define __MessageConverterVideo_H
+#ifndef __RIBConverterVideo_H
+#define __RIBConverterVideo_H
 
-#include "message_converter_base.h"
+#include "rib_converter_base.h"
 
 // ROS header files
 #include "ros/ros.h"
@@ -33,13 +33,13 @@
 #include "igtlMessageHeader.h"
 
 
-class MessageConverterVideo : public MessageConverterBase<ros_igtl_bridge::igtlvideo>
+class RIBConverterVideo : public RIBConverterBase<ros_igtl_bridge::igtlvideo>
 {
 
 public:
-  MessageConverterVideo();
-  MessageConverterVideo(ros::NodeHandle *nh);
-  MessageConverterVideo(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterVideo();
+  RIBConverterVideo(ros::NodeHandle *nh);
+  RIBConverterVideo(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }
@@ -52,6 +52,6 @@ public:
 };
 
 
-#endif // __MessageConverterVideo_H
+#endif // __RIBConverterVideo_H
 
 

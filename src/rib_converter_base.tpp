@@ -11,25 +11,25 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterPoint_TXX
-#define __MessageConverterPoint_TXX
+#ifndef __RIBConverterPoint_TXX
+#define __RIBConverterPoint_TXX
 
 #include <boost/bind.hpp>
 
 template <typename MessageType>
-MessageConverterBase<MessageType>::MessageConverterBase()
+RIBConverterBase<MessageType>::RIBConverterBase()
 {
   this->nodeHandle = NULL;
 }
 
 template <typename MessageType>
-MessageConverterBase<MessageType>::MessageConverterBase(ros::NodeHandle *nh)
+RIBConverterBase<MessageType>::RIBConverterBase(ros::NodeHandle *nh)
 {
   this->setNodeHandle(nh);
 }
 
 template <typename MessageType>
-MessageConverterBase<MessageType>::MessageConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+RIBConverterBase<MessageType>::RIBConverterBase(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
 {
   this->topicPublish = topicPublish;
   this->topicSubscribe = topicSubscribe;
@@ -37,12 +37,12 @@ MessageConverterBase<MessageType>::MessageConverterBase(const char* topicPublish
 }
 
 template <typename MessageType>
-MessageConverterBase<MessageType>::~MessageConverterBase()
+RIBConverterBase<MessageType>::~RIBConverterBase()
 {
 }
 
 template <typename MessageType>
-bool MessageConverterBase<MessageType>::publish(const char* topic)
+bool RIBConverterBase<MessageType>::publish(const char* topic)
 {
   if (!this->nodeHandle)
     {
@@ -63,7 +63,7 @@ bool MessageConverterBase<MessageType>::publish(const char* topic)
 
   
 template <typename MessageType>
-bool MessageConverterBase<MessageType>::subscribe(const char* topic)
+bool RIBConverterBase<MessageType>::subscribe(const char* topic)
 {
   if (!this->nodeHandle)
     {
@@ -79,7 +79,7 @@ bool MessageConverterBase<MessageType>::subscribe(const char* topic)
     ros::SubscribeOptions::create<MessageType>(
        this->topicSubscribe,
        this->queueSize, // queue length
-       boost::bind(&MessageConverterBase<MessageType>::onROSMessage, this, _1),
+       boost::bind(&RIBConverterBase<MessageType>::onROSMessage, this, _1),
        ros::VoidPtr(), // tracked object, we don't need one thus NULL
        &this->queue // pointer to callback queue object
       );
@@ -89,7 +89,7 @@ bool MessageConverterBase<MessageType>::subscribe(const char* topic)
 }
 
 template <typename MessageType>
-void MessageConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize)
+void RIBConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize)
 {
   this->setNodeHandle(nh);
   this->setSocket(socket);
@@ -97,7 +97,7 @@ void MessageConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket 
 }
 
 //template <typename MessageType>
-//void MessageConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, const char* topicSubscribe, const char* topicPublish)
+//void RIBConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket * socket, const char* topicSubscribe, const char* topicPublish)
 //{
 //  this->nodeHandle = nh;
 //  this->socket = socket;
@@ -105,5 +105,5 @@ void MessageConverterBase<MessageType>::setup(ros::NodeHandle* nh, igtl::Socket 
 //  this->topicPublish = topicPublish;
 //}
 
-#endif // __MessageConverterPoint_TXX
+#endif // __RIBConverterPoint_TXX
 

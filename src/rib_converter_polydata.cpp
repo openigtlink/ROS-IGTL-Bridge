@@ -11,7 +11,7 @@
 
 =========================================================================*/
 
-#include "message_converter_polydata.h"
+#include "rib_converter_polydata.h"
 #include "ros/ros.h"
 #include "igtlPolyDataMessage.h"
 
@@ -26,22 +26,22 @@
 #include <vtkFloatArray.h>
 #include <vtkTransform.h>
 
-MessageConverterPolyData::MessageConverterPolyData()
-  : MessageConverterBase<ros_igtl_bridge::igtlpolydata>()
+RIBConverterPolyData::RIBConverterPolyData()
+  : RIBConverterBase<ros_igtl_bridge::igtlpolydata>()
 {
 }
 
-MessageConverterPolyData::MessageConverterPolyData(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlpolydata>(nh)
+RIBConverterPolyData::RIBConverterPolyData(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlpolydata>(nh)
 {
 }
 
-MessageConverterPolyData::MessageConverterPolyData(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlpolydata>(topicPublish, topicSubscribe, nh)
+RIBConverterPolyData::RIBConverterPolyData(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlpolydata>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
 {
 
   vtkSmartPointer<vtkPolyData>  poly = vtkSmartPointer<vtkPolyData>::New();
@@ -181,7 +181,7 @@ int MessageConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
 }
 
 
-void MessageConverterPolyData::onROSMessage(const ros_igtl_bridge::igtlpolydata::ConstPtr & msg)
+void RIBConverterPolyData::onROSMessage(const ros_igtl_bridge::igtlpolydata::ConstPtr & msg)
 {
   vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
   msgToPolyData(msg,polydata);
@@ -303,7 +303,7 @@ void MessageConverterPolyData::onROSMessage(const ros_igtl_bridge::igtlpolydata:
 
 
 //----------------------------------------------------------------------
-void MessageConverterPolyData::msgToPolyData( const ros_igtl_bridge::igtlpolydata::ConstPtr& msg, vtkSmartPointer<vtkPolyData> polydata)
+void RIBConverterPolyData::msgToPolyData( const ros_igtl_bridge::igtlpolydata::ConstPtr& msg, vtkSmartPointer<vtkPolyData> polydata)
 {
   // points
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -422,7 +422,7 @@ void MessageConverterPolyData::msgToPolyData( const ros_igtl_bridge::igtlpolydat
 }
 
 
-ros_igtl_bridge::igtlpolydata MessageConverterPolyData::polyDataToMsg(const char* name, vtkSmartPointer<vtkPolyData> polydata )
+ros_igtl_bridge::igtlpolydata RIBConverterPolyData::polyDataToMsg(const char* name, vtkSmartPointer<vtkPolyData> polydata )
 {
     ros_igtl_bridge::igtlpolydata msg;
 

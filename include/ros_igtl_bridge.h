@@ -16,13 +16,13 @@
 #include <stdint.h>
 
 
-class MessageConverterPoint;
-class MessageConverterPointCloud;
-class MessageConverterTransform;
-class MessageConverterPolyData;
-class MessageConverterString;
-class MessageConverterImage;
-class MessageConverterVideo;
+class RIBConverterPoint;
+class RIBConverterPointCloud;
+class RIBConverterTransform;
+class RIBConverterPolyData;
+class RIBConverterString;
+class RIBConverterImage;
+class RIBConverterVideo;
 
 
 class ROS_IGTL_Bridge
@@ -40,12 +40,12 @@ public:
 private:
   ros::NodeHandle *nh;
 
-  MessageConverterPoint* mcpoint;
-  MessageConverterTransform* mctransform;
-  MessageConverterPolyData* mcpolydata;
-  MessageConverterPointCloud* mcpointcloud;
-  MessageConverterString* mcstring;
-  MessageConverterImage* mcimage;
+  RIBConverterPoint* ribcpoint;
+  RIBConverterTransform* ribctransform;
+  RIBConverterPolyData* ribcpolydata;
+  RIBConverterPointCloud* ribcpointcloud;
+  RIBConverterString* ribcstring;
+  RIBConverterImage* ribcimage;
   
   // Callbacks
   virtual void IGTLReceiverThread();

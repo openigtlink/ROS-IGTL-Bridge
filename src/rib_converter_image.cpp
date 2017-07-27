@@ -11,27 +11,27 @@
 
 =========================================================================*/
 
-#include "message_converter_image.h"
+#include "rib_converter_image.h"
 #include "ros/ros.h"
 
 #include "igtlImageMessage.h"
 
-MessageConverterImage::MessageConverterImage()
-  : MessageConverterBase<ros_igtl_bridge::igtlimage>()
+RIBConverterImage::RIBConverterImage()
+  : RIBConverterBase<ros_igtl_bridge::igtlimage>()
 {
 }
 
-MessageConverterImage::MessageConverterImage(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlimage>(nh)
+RIBConverterImage::RIBConverterImage(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlimage>(nh)
 {
 }
 
-MessageConverterImage::MessageConverterImage(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtlimage>(topicPublish, topicSubscribe, nh)
+RIBConverterImage::RIBConverterImage(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtlimage>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterImage::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterImage::onIGTLMessage(igtl::MessageHeader * header)
 {
   igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
   imgMsg->SetMessageHeader(header);
@@ -75,7 +75,7 @@ int MessageConverterImage::onIGTLMessage(igtl::MessageHeader * header)
 
 }
 
-void MessageConverterImage::onROSMessage(const ros_igtl_bridge::igtlimage::ConstPtr & msg)
+void RIBConverterImage::onROSMessage(const ros_igtl_bridge::igtlimage::ConstPtr & msg)
 {
   int   size[]     = {msg->z_steps,msg->y_steps,msg->x_steps};       // image dimension
   float spacing[]  = {msg->z_spacing,msg->y_spacing,msg->x_spacing};     // spacing (mm/pixel) 

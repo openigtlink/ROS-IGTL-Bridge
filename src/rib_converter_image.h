@@ -11,10 +11,10 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterImage_H
-#define __MessageConverterImage_H
+#ifndef __RIBConverterImage_H
+#define __RIBConverterImage_H
 
-#include "message_converter_base.h"
+#include "rib_converter_base.h"
 
 // ROS header files
 #include "sensor_msgs/Image.h"
@@ -26,13 +26,13 @@
 #include "igtlStringMessage.h"
 
 
-class MessageConverterImage : public MessageConverterBase<ros_igtl_bridge::igtlimage>
+class RIBConverterImage : public RIBConverterBase<ros_igtl_bridge::igtlimage>
 {
 
 public:
-  MessageConverterImage();
-  MessageConverterImage(ros::NodeHandle *nh);
-  MessageConverterImage(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterImage();
+  RIBConverterImage(ros::NodeHandle *nh);
+  RIBConverterImage(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }
@@ -45,6 +45,6 @@ public:
 };
 
 
-#endif // __MessageConverterImage_H
+#endif // __RIBConverterImage_H
 
 

@@ -3,12 +3,12 @@
 #include "ros_igtl_bridge.h"
 #include "ShowPolyData.h"
 
-#include "message_converter_point.h"
-#include "message_converter_pointcloud.h"
-#include "message_converter_transform.h"
-#include "message_converter_polydata.h"
-#include "message_converter_string.h"
-#include "message_converter_image.h"
+#include "rib_converter_point.h"
+#include "rib_converter_pointcloud.h"
+#include "rib_converter_transform.h"
+#include "rib_converter_polydata.h"
+#include "rib_converter_string.h"
+#include "rib_converter_image.h"
 
 
 //----------------------------------------------------------------------
@@ -53,35 +53,35 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   
   ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");
   
-  this->mcpoint = new MessageConverterPoint;
-  mcpoint->setup(nh, socket, 10);
-  mcpoint->publish("IGTL_POINT_IN");
-  mcpoint->subscribe("IGTL_POINT_OUT");
+  this->ribcpoint = new RIBConverterPoint;
+  ribcpoint->setup(nh, socket, 10);
+  ribcpoint->publish("IGTL_POINT_IN");
+  ribcpoint->subscribe("IGTL_POINT_OUT");
 
-  this->mctransform = new MessageConverterTransform;
-  mctransform->setup(nh, socket, 10);
-  mctransform->publish("IGTL_TRANSFORM_IN");
-  mctransform->subscribe("IGTL_TRANSFORM_OUT");
+  this->ribctransform = new RIBConverterTransform;
+  ribctransform->setup(nh, socket, 10);
+  ribctransform->publish("IGTL_TRANSFORM_IN");
+  ribctransform->subscribe("IGTL_TRANSFORM_OUT");
   
-  this->mcpolydata = new MessageConverterPolyData;
-  mcpolydata->setup(nh, socket, 10);
-  mcpolydata->publish("IGTL_POLYDATA_IN");
-  mcpolydata->subscribe("IGTL_POLYDATA_OUT");
+  this->ribcpolydata = new RIBConverterPolyData;
+  ribcpolydata->setup(nh, socket, 10);
+  ribcpolydata->publish("IGTL_POLYDATA_IN");
+  ribcpolydata->subscribe("IGTL_POLYDATA_OUT");
 
-  this->mcstring = new MessageConverterString;
-  mcstring->setup(nh, socket, 10);
-  mcstring->publish("IGTL_STRING_IN");
-  mcstring->subscribe("IGTL_STRING_OUT");
+  this->ribcstring = new RIBConverterString;
+  ribcstring->setup(nh, socket, 10);
+  ribcstring->publish("IGTL_STRING_IN");
+  ribcstring->subscribe("IGTL_STRING_OUT");
 
-  this->mcimage = new MessageConverterImage;
-  mcimage->setup(nh, socket, 5);
-  mcimage->publish("IGTL_IMAGE_IN");
-  mcimage->subscribe("IGTL_IMAGE_OUT");
+  this->ribcimage = new RIBConverterImage;
+  ribcimage->setup(nh, socket, 5);
+  ribcimage->publish("IGTL_IMAGE_IN");
+  ribcimage->subscribe("IGTL_IMAGE_OUT");
 
-  this->mcpointcloud = new MessageConverterPointCloud;
-  mcpointcloud->setup(nh, socket, 5);
-  mcpointcloud->publish("IGTL_POINTCLOUD_IN");
-  mcpointcloud->subscribe("IGTL_POINTCLOUD_OUT");
+  this->ribcpointcloud = new RIBConverterPointCloud;
+  ribcpointcloud->setup(nh, socket, 5);
+  ribcpointcloud->publish("IGTL_POINTCLOUD_IN");
+  ribcpointcloud->subscribe("IGTL_POINTCLOUD_OUT");
 
   // start receiver thread
   boost::thread* receiver_thread = new boost::thread(boost::bind(&ROS_IGTL_Bridge::IGTLReceiverThread, this));  
@@ -195,27 +195,27 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
     // DATATYPE POINT ----------------------------------------------
     if (strcmp(headerMsg->GetDeviceType(), "POINT") == 0)
       {
-	this->mcpoint->onIGTLMessage(headerMsg);
+	this->ribcpoint->onIGTLMessage(headerMsg);
       }
     // DATATYPE STRING ---------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "STRING") == 0)
       {
-        this->mcstring->onIGTLMessage(headerMsg);
+        this->ribcstring->onIGTLMessage(headerMsg);
       }
     // DATATYPE TRANSFORM ------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "TRANSFORM") == 0)
       { 
-	this->mctransform->onIGTLMessage(headerMsg);
+	this->ribctransform->onIGTLMessage(headerMsg);
       }
     // DATATYPE POLYDATA -------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "POLYDATA") == 0)
       {
-        this->mcpolydata->onIGTLMessage(headerMsg);
+        this->ribcpolydata->onIGTLMessage(headerMsg);
       }
     // DATATYPE IMAGE -------------------------------------------
     else if (strcmp(headerMsg->GetDeviceType(), "IMAGE") == 0)
       {
-        this->mcimage->onIGTLMessage(headerMsg);
+        this->ribcimage->onIGTLMessage(headerMsg);
       }
     // SKIP DATA 
     else

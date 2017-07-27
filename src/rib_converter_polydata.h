@@ -11,10 +11,10 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterPolyData_H
-#define __MessageConverterPolyData_H
+#ifndef __RIBConverterPolyData_H
+#define __RIBConverterPolyData_H
 
-#include "message_converter_base.h"
+#include "rib_converter_base.h"
 
 // ROS header files
 #include "ros/ros.h"
@@ -30,13 +30,13 @@
 #include "igtlMessageHeader.h"
 
 
-class MessageConverterPolyData : public MessageConverterBase<ros_igtl_bridge::igtlpolydata>
+class RIBConverterPolyData : public RIBConverterBase<ros_igtl_bridge::igtlpolydata>
 {
 
 public:
-  MessageConverterPolyData();
-  MessageConverterPolyData(ros::NodeHandle *nh);
-  MessageConverterPolyData(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterPolyData();
+  RIBConverterPolyData(ros::NodeHandle *nh);
+  RIBConverterPolyData(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }
@@ -53,6 +53,6 @@ protected:
 };
 
 
-#endif // __MessageConverterPolyData_H
+#endif // __RIBConverterPolyData_H
 
 

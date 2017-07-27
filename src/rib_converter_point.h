@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  Program:   Converter Class for Transform
+  Program:   Converter Class for Point
   Language:  C++
 
   Copyright (c) Brigham and Women's Hospital. All rights reserved.
@@ -11,41 +11,39 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterTransform_H
-#define __MessageConverterTransform_H
+#ifndef __RIBConverterPoint_H
+#define __RIBConverterPoint_H
 
-#include "message_converter_base.h"
+#include "rib_converter_base.h"
 
 // ROS header files
 #include "ros/ros.h"
 
 // ROS message header files
-#include "ros_igtl_bridge/igtltransform.h"
-#include "geometry_msgs/Transform.h"
-
+#include "ros_igtl_bridge/igtlpoint.h"
 
 // OpenIGTLink message files
-#include "igtlTransformMessage.h"
+#include "igtlStringMessage.h"
 
-class MessageConverterTransform : public MessageConverterBase<ros_igtl_bridge::igtltransform>
+
+class RIBConverterPoint : public RIBConverterBase<ros_igtl_bridge::igtlpoint>
 {
 
 public:
-  MessageConverterTransform();
-  MessageConverterTransform(ros::NodeHandle *nh);
-  MessageConverterTransform(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterPoint();
+  RIBConverterPoint(ros::NodeHandle *nh);
+  RIBConverterPoint(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }
-  virtual const char* messageTypeString() { return "TRANSFORM"; }
+  virtual const char* messageTypeString() { return "POINT"; }
 
 public:  
   virtual int onIGTLMessage(igtl::MessageHeader * header);
  protected:
-  virtual void onROSMessage(const ros_igtl_bridge::igtltransform::ConstPtr & msg);
+  virtual void onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr & msg);
 };
 
-
-#endif // __MessageConverterTransform_H
+#endif // __RIBConverterPoint_H
 
 

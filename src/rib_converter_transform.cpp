@@ -11,26 +11,26 @@
 
 =========================================================================*/
 
-#include "message_converter_transform.h"
+#include "rib_converter_transform.h"
 #include "ros/ros.h"
 #include "igtlTransformMessage.h"
 
-MessageConverterTransform::MessageConverterTransform()
-  : MessageConverterBase<ros_igtl_bridge::igtltransform>()
+RIBConverterTransform::RIBConverterTransform()
+  : RIBConverterBase<ros_igtl_bridge::igtltransform>()
 {
 }
 
-MessageConverterTransform::MessageConverterTransform(ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtltransform>(nh)
+RIBConverterTransform::RIBConverterTransform(ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtltransform>(nh)
 {
 }
 
-MessageConverterTransform::MessageConverterTransform(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
-  : MessageConverterBase<ros_igtl_bridge::igtltransform>(topicPublish, topicSubscribe, nh)
+RIBConverterTransform::RIBConverterTransform(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh)
+  : RIBConverterBase<ros_igtl_bridge::igtltransform>(topicPublish, topicSubscribe, nh)
 {
 }
 
-int MessageConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
 {
   // create a message buffer to receive transform data
   igtl::TransformMessage::Pointer transMsg;
@@ -77,7 +77,7 @@ int MessageConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
     }
 }
 
-void MessageConverterTransform::onROSMessage(const ros_igtl_bridge::igtltransform::ConstPtr & msg)
+void RIBConverterTransform::onROSMessage(const ros_igtl_bridge::igtltransform::ConstPtr & msg)
 {
   // convert msg to igtl matrix
   igtl::Matrix4x4 sendMatrix;

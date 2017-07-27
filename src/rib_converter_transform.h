@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  Program:   Converter Class for String
+  Program:   Converter Class for Transform
   Language:  C++
 
   Copyright (c) Brigham and Women's Hospital. All rights reserved.
@@ -11,40 +11,41 @@
 
 =========================================================================*/
 
-#ifndef __MessageConverterString_H
-#define __MessageConverterString_H
+#ifndef __RIBConverterTransform_H
+#define __RIBConverterTransform_H
 
-#include "message_converter_base.h"
+#include "rib_converter_base.h"
 
 // ROS header files
 #include "ros/ros.h"
 
 // ROS message header files
-#include "ros_igtl_bridge/igtlstring.h"
-#include "std_msgs/String.h"
+#include "ros_igtl_bridge/igtltransform.h"
+#include "geometry_msgs/Transform.h"
+
 
 // OpenIGTLink message files
-#include "igtlMessageHeader.h"
+#include "igtlTransformMessage.h"
 
-class MessageConverterString : public MessageConverterBase<ros_igtl_bridge::igtlstring>
+class RIBConverterTransform : public RIBConverterBase<ros_igtl_bridge::igtltransform>
 {
 
 public:
-  MessageConverterString();
-  MessageConverterString(ros::NodeHandle *nh);
-  MessageConverterString(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
+  RIBConverterTransform();
+  RIBConverterTransform(ros::NodeHandle *nh);
+  RIBConverterTransform(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
   virtual uint32_t queueSizePublish() { return 10; }
   virtual uint32_t queueSizeSubscribe() { return 10; }
-  virtual const char* messageTypeString() { return "STRING"; }
+  virtual const char* messageTypeString() { return "TRANSFORM"; }
 
 public:  
   virtual int onIGTLMessage(igtl::MessageHeader * header);
  protected:
-  virtual void onROSMessage(const ros_igtl_bridge::igtlstring::ConstPtr & msg);
+  virtual void onROSMessage(const ros_igtl_bridge::igtltransform::ConstPtr & msg);
 };
 
 
-#endif // __MessageConverterString_H
+#endif // __RIBConverterTransform_H
 
 
