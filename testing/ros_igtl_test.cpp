@@ -3,6 +3,21 @@
 #include "ReadOCTFile.h"
 #include "igtlMath.h"
 
+// VTK Includes
+#include <vtkCellArray.h>
+#include <vtkIdList.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+#include <vtkPolygon.h>
+#include <vtkCubeSource.h>
+#include <vtkVertex.h>
+#include <vtkPolyLine.h>
+#include <vtkTriangleStrip.h>
+#include <vtkFloatArray.h>
+#include <vtkTransform.h>
+#include <vtkPolyDataReader.h>
 
 //----------------------------------------------------------------------
 ROS_IGTL_Test::ROS_IGTL_Test(int argc, char *argv[], const char* node_name)
@@ -84,10 +99,11 @@ void ROS_IGTL_Test::stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& 
 }
 
 //----------------------------------------------------------------------
-void ROS_IGTL_Test::imageCallback(const sensor_msgs::Image::ConstPtr& msg)
+//void ROS_IGTL_Test::imageCallback(const sensor_msgs::Image::ConstPtr& msg)
+void ROS_IGTL_Test::imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg)
 {
   ROS_INFO("[ROS_IGTL_Test] Image received: \n");
-  ROS_INFO("Topic: /IGTL_IMAGE_IN  Use rviz for visualization!\n");
+  //ROS_INFO("Topic: /IGTL_IMAGE_IN  Use rviz for visualization!\n");
 }
 
 //----------------------------------------------------------------------

@@ -1,17 +1,17 @@
 #ifndef ROS_IGTL_TEST_H
 #define ROS_IGTL_TEST_H
 #include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "sensor_msgs/Image.h"
-#include "geometry_msgs/Transform.h"
-#include "image_transport/image_transport.h"
+//#include "std_msgs/String.h"
+//#include "sensor_msgs/Image.h"
+//#include "geometry_msgs/Transform.h"
+//#include "image_transport/image_transport.h"
 
-#include <ros_igtl_bridge.h>
+//#include "ros_igtl_bridge.h"
 
-#include <cv_bridge/cv_bridge.h>
-#include <sensor_msgs/image_encodings.h>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+//#include <cv_bridge/cv_bridge.h>
+//#include <sensor_msgs/image_encodings.h>
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include <opencv2/highgui/highgui.hpp>
 
 // Messages Includes
 #include "ros_igtl_bridge/igtltransform.h"
@@ -21,21 +21,6 @@
 #include "ros_igtl_bridge/igtlimage.h"
 #include "ros_igtl_bridge/igtlstring.h"
 
-// VTK Includes
-#include <vtkCellArray.h>
-#include <vtkIdList.h>
-#include <vtkPolyData.h>
-#include <vtkPoints.h>
-#include <vtkSmartPointer.h>
-#include <vtkPolyData.h>
-#include <vtkPolygon.h>
-#include <vtkCubeSource.h>
-#include <vtkVertex.h>
-#include <vtkPolyLine.h>
-#include <vtkTriangleStrip.h>
-#include <vtkFloatArray.h>
-#include <vtkTransform.h>
-#include <vtkPolyDataReader.h>
 // C++ Includes
 #include <cstdlib>
 #include <cstring>
@@ -87,7 +72,8 @@ private:
 	virtual void pointCallback(const ros_igtl_bridge::igtlpoint::ConstPtr& msg);
 	virtual void transformCallback(const ros_igtl_bridge::igtltransform::ConstPtr& msg);
 	virtual void stringCallback(const ros_igtl_bridge::igtlstring::ConstPtr& msg);
-	virtual void imageCallback(const sensor_msgs::Image::ConstPtr& msg);
+	//virtual void imageCallback(const sensor_msgs::Image::ConstPtr& msg);
+        virtual void imageCallback(const ros_igtl_bridge::igtlimage::ConstPtr& msg);
 	virtual void polydataCallback(const ros_igtl_bridge::igtlpolydata::ConstPtr& msg);
 };
 #endif 

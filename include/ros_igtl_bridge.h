@@ -16,13 +16,6 @@
 #include <stdint.h>
 #include <vector>
 
-//class RIBConverterPoint;
-//class RIBConverterPointCloud;
-//class RIBConverterTransform;
-//class RIBConverterPolyData;
-//class RIBConverterString;
-//class RIBConverterImage;
-//class RIBConverterVideo;
 class RIBConverterBase;
 
 class ROS_IGTL_Bridge
@@ -42,13 +35,7 @@ public:
 private:
   igtl::Socket::Pointer socket;
   ros::NodeHandle *nh;
-
-  //RIBConverterPoint* ribcpoint;
-  //RIBConverterTransform* ribctransform;
-  //RIBConverterPolyData* ribcpolydata;
-  //RIBConverterPointCloud* ribcpointcloud;
-  //RIBConverterString* ribcstring;
-  //RIBConverterImage* ribcimage;
+  
   std::vector< RIBConverterBase* > converters;
   
   // Callbacks
