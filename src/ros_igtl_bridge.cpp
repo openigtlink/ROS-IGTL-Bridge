@@ -14,7 +14,6 @@
 #include <boost/thread.hpp>
 
 #include "ros_igtl_bridge.h"
-#include "ShowPolyData.h"
 
 #include "rib_converter_point.h"
 #include "rib_converter_pointcloud.h"
