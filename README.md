@@ -1,7 +1,7 @@
 ROS-IGTL-Bridge
 ===============
 
-Author:Tobias Frank
+Author:Tobias Frank, Junichi Tokuda
 
 This ROS-Node provides an OpenIGTLink bridge to exchange data with ROS. 
 It supports sending and receiving Transformations, Images, Strings, 
