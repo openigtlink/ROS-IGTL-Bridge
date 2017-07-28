@@ -47,14 +47,14 @@ bool RIBConverter<MessageType>::publish(const char* topic)
       return false;
     }
   
-  if (!topic)
+  if (topic != NULL)
     {
       this->topicPublish = topic;
     }
   
   // TODO: Queue size (second argument) should be configurable
   this->publisher = nodeHandle->advertise<MessageType>(this->topicPublish, this->queueSize);
-  std::cerr << "TOPIC: " << this->topicSubscribe << std::endl;
+  //std::cerr << "TOPIC: " << this->topicPublish << std::endl;
   
   return true;
 }
@@ -68,7 +68,7 @@ bool RIBConverter<MessageType>::subscribe(const char* topic)
       return false;
     }
   
-  if (!topic)
+  if (topic != NULL)
     {
       this->topicSubscribe = topic;
     }

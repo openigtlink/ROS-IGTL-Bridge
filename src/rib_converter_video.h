@@ -41,8 +41,8 @@ public:
   RIBConverterVideo(ros::NodeHandle *nh);
   RIBConverterVideo(const char* topicPublish, const char* topicSubscribe, ros::NodeHandle *nh=NULL);
   
-  virtual uint32_t queueSizePublish() { return 10; }
-  virtual uint32_t queueSizeSubscribe() { return 10; }
+  //virtual uint32_t queueSizePublish() { return 10; }
+  //virtual uint32_t queueSizeSubscribe() { return 10; }
   virtual const char* messageTypeString() { return "VIDEO"; }
 
 public:  

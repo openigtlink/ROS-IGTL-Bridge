@@ -19,6 +19,7 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   
   // run bridge as client or server
   std::string type;
+  
   ROS_INFO("[ROS-IGTL-Bridge] a");
   if(nh->getParam("/RIB_type",type))
     {
@@ -35,18 +36,23 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
     short srvcl = 0;
     while(1)
       {
-      std::cout<<"[ROS-IGTL-Bridge] Please type <1> or <2> to run node as OpenIGTLink client or server"<<std::endl<<"1 : SERVER"<<std::endl<<"2 : CLIENT"<<std::endl;
+      std::cout << "[ROS-IGTL-Bridge] Please type <1> or <2> to run node as OpenIGTLink client or server"<<std::endl;
+      std::cout << "1 : SERVER" << std::endl << "2 : CLIENT" << std::endl;
       std::cin>>srvcl;
       
       if (srvcl==1)
         {
-        CreateIGTLServer();
-        break;
+          CreateIGTLServer();
+          break;
         }
       else if (srvcl==2)
         {
-        ConnectToIGTLServer();
-        break;
+          ConnectToIGTLServer();
+          break;
+        }
+      else
+        {
+        ROS_ERROR("[ROS-IGTL-Bridge] Invalid answer.");
         }
       }
     }
@@ -201,6 +207,7 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
 
 void ROS_IGTL_Bridge::AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe)
 {
+  std::cerr << "void ROS_IGTL_Bridge::AddConverter() topic = " << topicPublish << std::endl;
   converter->setup(this->nh, this->socket, size);
   converter->publish(topicPublish);
   converter->subscribe(topicSubscribe);
