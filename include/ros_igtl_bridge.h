@@ -39,20 +39,23 @@ public:
   void Run();
   
   igtl::Socket::Pointer GetSocketPointer();
-  virtual void CreateIGTLServer();
-  virtual void ConnectToIGTLServer();
 
- protected:
-  //void AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe);
-  
-private:
+protected:
+
+  virtual int StartIGTLServer();
+  virtual int ConnectToIGTLServer();
+  virtual void IGTLThread();
 
   igtl::Socket::Pointer socket;
+  igtl::ServerSocket::Pointer serverSocket;
+  igtl::ClientSocket::Pointer clientSocket;
+    
   ros::NodeHandle *nh;
   RIBConverterManager * converterManager;
-
-  // Callbacks
-  virtual void IGTLReceiverThread();
   
+  bool isServer;   // Socket type for OpenIGTLink connection
+  std::string address;
+  int port;
+
 };
 #endif 
