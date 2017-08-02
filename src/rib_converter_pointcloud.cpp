@@ -12,6 +12,7 @@
 =========================================================================*/
 
 #include "rib_converter_pointcloud.h"
+#include "rib_converter_manager.h"
 #include "ros/ros.h"
 #include "igtlPointMessage.h"
 
@@ -38,7 +39,13 @@ int RIBConverterPointCloud::onIGTLMessage(igtl::MessageHeader * header)
 
 void RIBConverterPointCloud::onROSMessage(const ros_igtl_bridge::igtlpointcloud::ConstPtr & msg)
 {
-  
+
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
+
   int pcl_size = msg->pointdata.size();
   if (!pcl_size) 
     {

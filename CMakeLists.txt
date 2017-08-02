@@ -134,6 +134,7 @@ include_directories(include ${OpenIGTLink_INCLUDE_DIRS} ${CMAKE_CURRENT_LIST_DIR
 ## Declare a C++ library
 add_library(${PROJECT_NAME}_lib
   src/rib_converter_base.cpp
+  src/rib_converter_manager.cpp
   src/rib_converter_image.cpp
   src/rib_converter_pointcloud.cpp
   src/rib_converter_point.cpp

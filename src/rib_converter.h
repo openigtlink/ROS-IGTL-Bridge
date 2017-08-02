@@ -22,7 +22,7 @@
 #include "rib_converter_base.h"
 #include "ros/callback_queue.h"
 #include "igtlMessageHeader.h"
-#include "igtlSocket.h"
+//#include "igtlSocket.h"
 
 template <typename MessageType>
 class RIBConverter : public RIBConverterBase

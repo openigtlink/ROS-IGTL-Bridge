@@ -36,10 +36,9 @@ RIBConverterBase::~RIBConverterBase()
 }
 
 
-void RIBConverterBase::setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize)
+void RIBConverterBase::setup(ros::NodeHandle* nh, uint32_t queuSize)
 {
   this->setNodeHandle(nh);
-  this->setSocket(socket);
   this->setQueueSize(queueSize);
 }
 

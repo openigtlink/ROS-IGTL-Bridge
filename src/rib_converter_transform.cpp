@@ -12,6 +12,7 @@
 =========================================================================*/
 
 #include "rib_converter_transform.h"
+#include "rib_converter_manager.h"
 #include "ros/ros.h"
 #include "igtlTransformMessage.h"
 
@@ -32,15 +33,21 @@ RIBConverterTransform::RIBConverterTransform(const char* topicPublish, const cha
 
 int RIBConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
 {
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return 0;
+    }
+
   // create a message buffer to receive transform data
   igtl::TransformMessage::Pointer transMsg;
   transMsg = igtl::TransformMessage::New();
   transMsg->SetMessageHeader(header);
   transMsg->AllocatePack();
-  
+
   // receive transform data from the socket
-  this->socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
-  
+  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
+
   // unpack message
   int c = transMsg->Unpack(1);
   
@@ -79,6 +86,12 @@ int RIBConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
 
 void RIBConverterTransform::onROSMessage(const ros_igtl_bridge::igtltransform::ConstPtr & msg)
 {
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
+
   // convert msg to igtl matrix
   igtl::Matrix4x4 sendMatrix;
   igtl::IdentityMatrix(sendMatrix);
@@ -102,7 +115,9 @@ void RIBConverterTransform::onROSMessage(const ros_igtl_bridge::igtltransform::C
   transMsg->SetDeviceName(msg->name.c_str());
   transMsg->SetMatrix(sendMatrix);
   transMsg->Pack();
-  this->socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
+  
+  socket->Send(transMsg->GetPackPointer(), transMsg->GetPackSize());
+  
 }
 
 

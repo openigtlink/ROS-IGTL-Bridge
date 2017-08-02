@@ -12,6 +12,7 @@
 =========================================================================*/
 
 #include "rib_converter_image.h"
+#include "rib_converter_manager.h"
 #include "ros/ros.h"
 
 #include "igtlImageMessage.h"
@@ -36,14 +37,20 @@ int RIBConverterImage::onIGTLMessage(igtl::MessageHeader * header)
   igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
   imgMsg->SetMessageHeader(header);
   imgMsg->AllocatePack();
-
-  this->socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize());
+  
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return 0;
+    }
+  
+  socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize());
   int c = imgMsg->Unpack(1);
   
   if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
     {
-    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: IMAGE.");
-    return 0;
+      ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: IMAGE.");
+      return 0;
     }
   
   std::vector<uint8_t> image;
@@ -80,6 +87,12 @@ void RIBConverterImage::onROSMessage(const ros_igtl_bridge::igtlimage::ConstPtr 
   int   size[]     = {msg->z_steps,msg->y_steps,msg->x_steps};       // image dimension
   float spacing[]  = {msg->z_spacing,msg->y_spacing,msg->x_spacing};     // spacing (mm/pixel) 
   int   scalarType = igtl::ImageMessage::TYPE_UINT8;
+
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
   
   igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();
   imgMsg->SetDimensions(size);
@@ -101,7 +114,7 @@ void RIBConverterImage::onROSMessage(const ros_igtl_bridge::igtlimage::ConstPtr 
   // Pack and send
   imgMsg->Pack();
   
-  this->socket->Send(imgMsg->GetPackPointer(), imgMsg->GetPackSize());
+  socket->Send(imgMsg->GetPackPointer(), imgMsg->GetPackSize());
 }
 
 

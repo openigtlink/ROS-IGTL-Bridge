@@ -12,6 +12,7 @@
 =========================================================================*/
 
 #include "rib_converter_point.h"
+#include "rib_converter_manager.h"
 #include "ros/ros.h"
 #include "igtlPointMessage.h"
 
@@ -35,8 +36,14 @@ int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
   igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
   pointMsg->SetMessageHeader(header);
   pointMsg->AllocatePack();
-  
-  this->socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize());
+
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return 0;
+    }
+
+  socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize());
   int c = pointMsg->Unpack(1);
   
   if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
@@ -78,6 +85,13 @@ int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
 
 void RIBConverterPoint::onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr & msg)
 {
+  
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
+
   geometry_msgs::Point point = msg->pointdata;
   
   igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
@@ -89,6 +103,6 @@ void RIBConverterPoint::onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr 
   pointMsg->AddPointElement(pointE);
   pointMsg->Pack();
   
-  this->socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
+  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
 }
 

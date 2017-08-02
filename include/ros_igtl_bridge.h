@@ -29,7 +29,7 @@
 #include <stdint.h>
 #include <vector>
 
-class RIBConverterBase;
+class RIBConverterManager;
 
 class ROS_IGTL_Bridge
 {
@@ -43,14 +43,14 @@ public:
   virtual void ConnectToIGTLServer();
 
  protected:
-  void AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe);
+  //void AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe);
   
 private:
+
   igtl::Socket::Pointer socket;
   ros::NodeHandle *nh;
-  
-  std::vector< RIBConverterBase* > converters;
-  
+  RIBConverterManager * converterManager;
+
   // Callbacks
   virtual void IGTLReceiverThread();
   

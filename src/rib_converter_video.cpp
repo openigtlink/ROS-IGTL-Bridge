@@ -37,6 +37,13 @@ int RIBConverterVideo::onIGTLMessage(igtl::MessageHeader * header)
 void RIBConverterVideo::onROSMessage(const ros_igtl_bridge::igtlvideo::ConstPtr & msg)
 {
   cv_bridge::CvImagePtr cv_ptr;
+
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
+  
   try
     {
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);

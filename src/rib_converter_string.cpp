@@ -12,6 +12,7 @@
 =========================================================================*/
 
 #include "rib_converter_string.h"
+#include "rib_converter_manager.h"
 #include "ros/ros.h"
 #include "igtlStringMessage.h"
 
@@ -32,6 +33,12 @@ RIBConverterString::RIBConverterString(const char* topicPublish, const char* top
 
 int RIBConverterString::onIGTLMessage(igtl::MessageHeader * header)
 {
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return 0;
+    }
+
   // Create a message buffer to receive string data
   igtl::StringMessage::Pointer stringMsg;
   stringMsg = igtl::StringMessage::New();
@@ -62,6 +69,12 @@ int RIBConverterString::onIGTLMessage(igtl::MessageHeader * header)
 
 void RIBConverterString::onROSMessage(const ros_igtl_bridge::igtlstring::ConstPtr & msg)
 {
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
+
   //  SendString(msg->name.c_str(), msg->data);
   igtl::StringMessage::Pointer stringMsg = igtl::StringMessage::New();
   stringMsg->SetDeviceName(msg->name.c_str());

@@ -12,6 +12,7 @@
 =========================================================================*/
 
 #include "rib_converter_polydata.h"
+#include "rib_converter_manager.h"
 #include "ros/ros.h"
 #include "igtlPolyDataMessage.h"
 
@@ -43,6 +44,12 @@ RIBConverterPolyData::RIBConverterPolyData(const char* topicPublish, const char*
 
 int RIBConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
 {
+
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return 0;
+    }
 
   vtkSmartPointer<vtkPolyData>  poly = vtkSmartPointer<vtkPolyData>::New();
   
@@ -183,6 +190,12 @@ int RIBConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
 
 void RIBConverterPolyData::onROSMessage(const ros_igtl_bridge::igtlpolydata::ConstPtr & msg)
 {
+  igtl::Socket::Pointer socket = this->manager->GetSocket();
+  if (socket.IsNull())
+    {
+      return;
+    }
+
   vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
   msgToPolyData(msg,polydata);
 
@@ -298,7 +311,7 @@ void RIBConverterPolyData::onROSMessage(const ros_igtl_bridge::igtlpolydata::Con
   // pack and send
   polyDataMsg->Pack();
 	
-  this->socket->Send(polyDataMsg->GetPackPointer(), polyDataMsg->GetPackSize());
+  socket->Send(polyDataMsg->GetPackPointer(), polyDataMsg->GetPackSize());
 }
 
 

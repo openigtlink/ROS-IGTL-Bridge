@@ -19,6 +19,8 @@
 #include "igtlMessageHeader.h"
 #include "igtlSocket.h"
 
+class RIBConverterManager;
+
 class RIBConverterBase
 {
 
@@ -38,9 +40,10 @@ protected:
 
 public:
   void setNodeHandle(ros::NodeHandle* nh) { this->nodeHandle = nh; }
-  void setSocket(igtl::Socket * socket) { this->socket = socket; }
+  //void setSocket(igtl::Socket * socket) { this->socket = socket; }
   void setQueueSize(uint32_t size) { this->queueSize = size; }
-  void setup(ros::NodeHandle* nh, igtl::Socket * socket, uint32_t queuSize);
+  void setup(ros::NodeHandle* nh, uint32_t queuSize);
+  void setManager(RIBConverterManager* manager) { this->manager = manager; }
 
   virtual bool publish(const char* topic) = 0;
   virtual bool subscribe(const char* topic) = 0;
@@ -60,8 +63,10 @@ protected:
   ros::NodeHandle *nodeHandle;
   ros::SubscribeOptions options;
   
-  igtl::Socket* socket;
+  //igtl::Socket* socket;
   ros::CallbackQueue queue;
+
+  RIBConverterManager* manager;
   
 };
 

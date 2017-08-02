@@ -15,6 +15,7 @@
 
 #include "ros_igtl_bridge.h"
 
+#include "rib_converter_manager.h"
 #include "rib_converter_point.h"
 #include "rib_converter_pointcloud.h"
 #include "rib_converter_transform.h"
@@ -27,11 +28,29 @@
 ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
 {
   ros::init(argc, argv, node_name);
-  nh = new ros::NodeHandle;	
+  this->nh = new ros::NodeHandle;
   
+  this->converterManager = new RIBConverterManager;
+  this->converterManager->SetNodeHandle(this->nh);
+  
+  // Regisgter converter classes
+  RIBConverterPoint * point = new RIBConverterPoint;
+  RIBConverterTransform* transform = new RIBConverterTransform;
+  RIBConverterPolyData* polydata = new RIBConverterPolyData;
+  RIBConverterString* string = new RIBConverterString;
+  RIBConverterImage* image = new RIBConverterImage;
+  RIBConverterPointCloud* pointcloud = new RIBConverterPointCloud;
+  
+  this->converterManager->AddConverter(point, 10, "IGTL_POINT_IN", "IGTL_POINT_OUT");
+  this->converterManager->AddConverter(transform, 10, "IGTL_TRANSFORM_IN", "IGTL_TRANSFORM_OUT");
+  this->converterManager->AddConverter(polydata, 10, "IGTL_POLYDATA_IN", "IGTL_POLYDATA_OUT");
+  this->converterManager->AddConverter(string, 10, "IGTL_STRING_IN", "IGTL_STRING_OUT");
+  this->converterManager->AddConverter(image, 10, "IGTL_IMAGE_IN", "IGTL_IMAGE_OUT");
+  this->converterManager->AddConverter(pointcloud, 10, "IGTL_POINTCLOUD_IN", "IGTL_POINTCLOUD_OUT");
+
   // run bridge as client or server
   std::string type;
-  
+
   ROS_INFO("[ROS-IGTL-Bridge] a");
   if(nh->getParam("/RIB_type",type))
     {
@@ -70,24 +89,6 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
     }
   
   ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");
-  
-  RIBConverterPoint * point = new RIBConverterPoint;
-  this->AddConverter(point, 10, "IGTL_POINT_IN", "IGTL_POINT_OUT");
-  
-  RIBConverterTransform* transform = new RIBConverterTransform;
-  this->AddConverter(transform, 10, "IGTL_TRANSFORM_IN", "IGTL_TRANSFORM_OUT");
-  
-  RIBConverterPolyData* polydata = new RIBConverterPolyData;
-  this->AddConverter(polydata, 10, "IGTL_POLYDATA_IN", "IGTL_POLYDATA_OUT");
-
-  RIBConverterString* string = new RIBConverterString;
-  this->AddConverter(string, 10, "IGTL_STRING_IN", "IGTL_STRING_OUT");
-
-  RIBConverterImage* image = new RIBConverterImage;
-  this->AddConverter(image, 10, "IGTL_IMAGE_IN", "IGTL_IMAGE_OUT");
-
-  RIBConverterPointCloud* pointcloud = new RIBConverterPointCloud;
-  this->AddConverter(pointcloud, 10, "IGTL_POINTCLOUD_IN", "IGTL_POINTCLOUD_OUT");
 
   // start receiver thread
   boost::thread* receiver_thread = new boost::thread(boost::bind(&ROS_IGTL_Bridge::IGTLReceiverThread, this));  
@@ -96,7 +97,7 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
 //----------------------------------------------------------------------
 ROS_IGTL_Bridge::~ROS_IGTL_Bridge()
 {
-  socket->CloseSocket();
+  //this->socket->CloseSocket();
 }
 
 //----------------------------------------------------------------------
@@ -117,7 +118,7 @@ igtl::Socket::Pointer ROS_IGTL_Bridge::GetSocketPointer()
 void ROS_IGTL_Bridge::CreateIGTLServer()
 {
   int    port     = 18944;  // std port
-  if(nh->getParam("/RIB_port",port))
+  if(this->nh->getParam("/RIB_port",port))
     {}
   else
     {
@@ -137,8 +138,9 @@ void ROS_IGTL_Bridge::CreateIGTLServer()
   // wait for connection
   while (1)
     {
-    socket = serverSocket->WaitForConnection(1000);
-    if (ROS_IGTL_Bridge::socket.IsNotNull()) 
+    this->socket = serverSocket->WaitForConnection(1000);
+    this->converterManager->SetSocket(this->socket);
+    if (this->socket.IsNotNull()) 
       {   
       break;
       }
@@ -177,7 +179,8 @@ void ROS_IGTL_Bridge::ConnectToIGTLServer()
     ROS_ERROR("[ROS-IGTL-Bridge] Cannot connect to server.");
     exit(0);
     }
-  socket = (igtl::Socket *)(clientsocket);
+  this->socket = (igtl::Socket *)(clientsocket);
+  this->converterManager->SetSocket(this->socket);
 }
 
 // ----- receiving from slicer -----------------------------------------
@@ -191,39 +194,31 @@ void ROS_IGTL_Bridge::IGTLReceiverThread()
     {
     headerMsg->InitPack();
     // receive packet
-    rs = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+    rs = this->socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
     
     if (rs == 0)
-      socket->CloseSocket();
+      {
+      this->socket->CloseSocket();
+      this->converterManager->SetSocket(NULL);
+      return; // Terminate the thread.
+      }
+    
     if (rs != headerMsg->GetPackSize())
       continue;
     
-    headerMsg->Unpack();
-    
-    std::vector< RIBConverterBase* >::iterator iter;
-    for (iter = this->converters.begin(); iter != this->converters.end(); iter ++)
-      {
-        if (strcmp(headerMsg->GetDeviceType(), (*iter)->messageTypeString()) == 0)
-          {
-            (*iter)->onIGTLMessage(headerMsg);
-            break;
-          }
-      }
-    if (iter == this->converters.end())
-      {
-        socket->Skip(headerMsg->GetBodySizeToRead(),0);
-      }
+    this->converterManager->ProcessIGTLMessage(headerMsg);
     }
+    
 }
 
 
-void ROS_IGTL_Bridge::AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe)
-{
-  std::cerr << "void ROS_IGTL_Bridge::AddConverter() topic = " << topicPublish << std::endl;
-  converter->setup(this->nh, this->socket, size);
-  converter->publish(topicPublish);
-  converter->subscribe(topicSubscribe);
-  this->converters.push_back(converter);
-}
+//void ROS_IGTL_Bridge::AddConverter(RIBConverterBase* converter, uint32_t size, const char* topicPublish, const char* topicSubscribe)
+//{
+//  std::cerr << "void ROS_IGTL_Bridge::AddConverter() topic = " << topicPublish << std::endl;
+//  converter->setup(this->nh, this->socket, size);
+//  converter->publish(topicPublish);
+//  converter->subscribe(topicSubscribe);
+//  this->converters.push_back(converter);
+//}
 
 
