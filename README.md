@@ -20,9 +20,8 @@ The following steps were tested on:
 - Ubuntu 14.04 + ROS Indigo
 - Ubuntu 16.04 + ROS Kinetic Kame
 
-[Install OpenIGTLink]
 
-Please refer to http://openigtlink.org/. In the following instruction, we assume that the build directory for the OpenIGTLink library is located at: ~/igtl/OpenIGTLink-build
+First, install OpenIGTLink in your local computer. A detailed instruction can be found at http://openigtlink.org/. In the following instruction, we assume that the build directory for the OpenIGTLink library is located at: ~/igtl/OpenIGTLink-build
 
     $ cd <your OpenIGTLink directory>
     $ git clone https://github.com/openigtlink/OpenIGTLink.git
@@ -31,8 +30,7 @@ Please refer to http://openigtlink.org/. In the following instruction, we assume
     $ cmake -DBUILD_EXAMPLES:BOOL=ON ../OpenIGTLink
     $ make
 
-[Install ROS] (http://wiki.ros.org)
-and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
+Install [ROS](http://wiki.ros.org) and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
 
     $ mkdir -p ~/catkin_ws/src
     $ catkin_make
