@@ -23,6 +23,7 @@ The following steps were tested on:
 [Install OpenIGTLink]
 
 Please refer to http://openigtlink.org/. In the following instruction, we assume that the build directory for the OpenIGTLink library is located at: ~/igtl/OpenIGTLink-build
+
     $ cd <your OpenIGTLink directory>
     $ git clone https://github.com/openigtlink/OpenIGTLink.git
     $ mkdir OpenIGTLink-build
