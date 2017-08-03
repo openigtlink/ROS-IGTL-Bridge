@@ -63,7 +63,6 @@ protected:
   ros::NodeHandle *nodeHandle;
   ros::SubscribeOptions options;
   
-  //igtl::Socket* socket;
   ros::CallbackQueue queue;
 
   RIBConverterManager* manager;

@@ -43,7 +43,7 @@ void RIBConverterPointCloud::onROSMessage(const ros_igtl_bridge::igtlpointcloud:
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return;
+    return;
     }
 
   int pcl_size = msg->pointdata.size();

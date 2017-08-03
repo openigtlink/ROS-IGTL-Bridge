@@ -9,7 +9,7 @@
   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
   PURPOSE.  See the above copyright notices for more information.
 
-=========================================================================*/
+  =========================================================================*/
 
 #include "rib_converter_point.h"
 #include "rib_converter_manager.h"
@@ -40,7 +40,7 @@ int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return 0;
+    return 0;
     }
 
   socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize());
@@ -89,7 +89,7 @@ void RIBConverterPoint::onROSMessage(const ros_igtl_bridge::igtlpoint::ConstPtr 
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return;
+    return;
     }
 
   geometry_msgs::Point point = msg->pointdata;

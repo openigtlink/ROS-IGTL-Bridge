@@ -58,9 +58,9 @@ To simply run the bridge without sending test sample data, type:
 It is possible to edit the launch files and set your IP & Port in the file. Run the node as server or client by adjusting the parameter RIB_type.
 Open the file and uncomment the lines:
 
-	  $ <!--param name="RIB_server_ip" value="111.111.111.111" type="str"/-->
-	  $ <!--param name="RIB_port" value="18944" type="int"/-->
-      $ <!--param name="RIB_type" value="client" type="str"/-->
+    $ <!--param name="RIB_server_ip" value="111.111.111.111" type="str"/-->
+    $ <!--param name="RIB_port" value="18944" type="int"/-->
+    $ <!--param name="RIB_type" value="client" type="str"/-->
 
 The node can be run as server or client. If you executed the test procedure, the node will send
 a "ROS_IGTL_Test_Transform" with random translation, a random "ROS_IGTL_Test_Point", 

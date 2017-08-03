@@ -47,21 +47,21 @@ void RIBConverterManager::ProcessIGTLMessage(igtl::MessageHeader* headerMsg)
 
   if (this->socket.IsNull())
     {
-      return;
+    return;
     }
   
   std::vector< RIBConverterBase* >::iterator iter;
   for (iter = this->converters.begin(); iter != this->converters.end(); iter ++)
     {
-      if (strcmp(headerMsg->GetDeviceType(), (*iter)->messageTypeString()) == 0)
-        {
-          (*iter)->onIGTLMessage(headerMsg);
-          break;
-        }
+    if (strcmp(headerMsg->GetDeviceType(), (*iter)->messageTypeString()) == 0)
+      {
+      (*iter)->onIGTLMessage(headerMsg);
+      break;
+      }
     }
   if (iter == this->converters.end())
     {
-      this->socket->Skip(headerMsg->GetBodySizeToRead(),0);
+    this->socket->Skip(headerMsg->GetBodySizeToRead(),0);
     }
 }
 

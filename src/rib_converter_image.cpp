@@ -41,7 +41,7 @@ int RIBConverterImage::onIGTLMessage(igtl::MessageHeader * header)
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return 0;
+    return 0;
     }
   
   socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize());
@@ -49,8 +49,8 @@ int RIBConverterImage::onIGTLMessage(igtl::MessageHeader * header)
   
   if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 
     {
-      ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: IMAGE.");
-      return 0;
+    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: IMAGE.");
+    return 0;
     }
   
   std::vector<uint8_t> image;
@@ -91,7 +91,7 @@ void RIBConverterImage::onROSMessage(const ros_igtl_bridge::igtlimage::ConstPtr 
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return;
+    return;
     }
   
   igtl::ImageMessage::Pointer imgMsg = igtl::ImageMessage::New();

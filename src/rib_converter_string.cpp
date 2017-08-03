@@ -36,7 +36,7 @@ int RIBConverterString::onIGTLMessage(igtl::MessageHeader * header)
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return 0;
+    return 0;
     }
 
   // Create a message buffer to receive string data
@@ -72,7 +72,7 @@ void RIBConverterString::onROSMessage(const ros_igtl_bridge::igtlstring::ConstPt
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return;
+    return;
     }
 
   //  SendString(msg->name.c_str(), msg->data);

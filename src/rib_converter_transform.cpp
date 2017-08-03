@@ -53,34 +53,34 @@ int RIBConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
   
   if (c & igtl::MessageHeader::UNPACK_BODY) 
     { 
-    // retrive the transform data
-    ros_igtl_bridge::igtltransform msg;
-    igtl::Matrix4x4 igtlmatrix;
-    igtl::IdentityMatrix(igtlmatrix);
-    transMsg->GetMatrix(igtlmatrix);
+      // retrive the transform data
+      ros_igtl_bridge::igtltransform msg;
+      igtl::Matrix4x4 igtlmatrix;
+      igtl::IdentityMatrix(igtlmatrix);
+      transMsg->GetMatrix(igtlmatrix);
     
-    msg.transform.translation.x = igtlmatrix[0][3];
-    msg.transform.translation.y = igtlmatrix[1][3];
-    msg.transform.translation.z = igtlmatrix[2][3];
+      msg.transform.translation.x = igtlmatrix[0][3];
+      msg.transform.translation.y = igtlmatrix[1][3];
+      msg.transform.translation.z = igtlmatrix[2][3];
     
-    float quaternion [4];
-    igtl::MatrixToQuaternion(igtlmatrix,quaternion);
+      float quaternion [4];
+      igtl::MatrixToQuaternion(igtlmatrix,quaternion);
     
 
-    msg.transform.rotation.x = quaternion[0];
-    msg.transform.rotation.y = quaternion[1];
-    msg.transform.rotation.z = quaternion[2];
-    msg.transform.rotation.w = quaternion[3];
+      msg.transform.rotation.x = quaternion[0];
+      msg.transform.rotation.y = quaternion[1];
+      msg.transform.rotation.z = quaternion[2];
+      msg.transform.rotation.w = quaternion[3];
     
-    msg.name = transMsg->GetDeviceName();
-    // publish to topic
-    this->publisher.publish(msg);
-    return 1;
+      msg.name = transMsg->GetDeviceName();
+      // publish to topic
+      this->publisher.publish(msg);
+      return 1;
     }
   else 
     {
-    ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: TRANSFORM.");
-    return 0;
+      ROS_ERROR("[ROS-IGTL-Bridge] Failed to unpack the message. Datatype: TRANSFORM.");
+      return 0;
     }
 }
 

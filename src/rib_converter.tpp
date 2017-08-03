@@ -9,7 +9,7 @@
   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
   PURPOSE.  See the above copyright notices for more information.
 
-=========================================================================*/
+  =========================================================================*/
 
 #ifndef __RIBConverterPoint_TXX
 #define __RIBConverterPoint_TXX
@@ -44,12 +44,12 @@ bool RIBConverter<MessageType>::publish(const char* topic)
 {
   if (!this->nodeHandle)
     {
-      return false;
+    return false;
     }
   
   if (topic != NULL)
     {
-      this->topicPublish = topic;
+    this->topicPublish = topic;
     }
   
   // TODO: Queue size (second argument) should be configurable
@@ -65,22 +65,22 @@ bool RIBConverter<MessageType>::subscribe(const char* topic)
 {
   if (!this->nodeHandle)
     {
-      return false;
+    return false;
     }
   
   if (topic != NULL)
     {
-      this->topicSubscribe = topic;
+    this->topicSubscribe = topic;
     }
 
   this->options =
     ros::SubscribeOptions::create<MessageType>(
-       this->topicSubscribe,
-       this->queueSize, // queue length
-       boost::bind(&RIBConverter<MessageType>::onROSMessage, this, _1),
-       ros::VoidPtr(), // tracked object, we don't need one thus NULL
-       &this->queue // pointer to callback queue object
-      );
+                                               this->topicSubscribe,
+                                               this->queueSize, // queue length
+                                               boost::bind(&RIBConverter<MessageType>::onROSMessage, this, _1),
+                                               ros::VoidPtr(), // tracked object, we don't need one thus NULL
+                                               &this->queue // pointer to callback queue object
+                                               );
   this->subscriber = this->nodeHandle->subscribe(options);
 
   return true;

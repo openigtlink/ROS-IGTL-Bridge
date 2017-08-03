@@ -60,18 +60,18 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
     ROS_INFO("[ROS-IGTL-Bridge] b ");
     if(type == "client")
       {
-        //ConnectToIGTLServer();
-        this->isServer = false;
+      //ConnectToIGTLServer();
+      this->isServer = false;
       }
     else if(type == "server")
       {
-        //StartIGTLServer();
-        this->isServer = true;
+      //StartIGTLServer();
+      this->isServer = true;
       }
     else
       {
-        ROS_ERROR("[ROS-IGTL-Bridge] Unknown Value for Parameter 'RIB_type'");
-        ros::shutdown();
+      ROS_ERROR("[ROS-IGTL-Bridge] Unknown Value for Parameter 'RIB_type'");
+      ros::shutdown();
       }
     }
   else
@@ -85,15 +85,15 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
       
       if (srvcl==1)
         {
-          //StartIGTLServer();
-          this->isServer = true;
-          break;
+        //StartIGTLServer();
+        this->isServer = true;
+        break;
         }
       else if (srvcl==2)
         {
-          //ConnectToIGTLServer();
-          this->isServer = false;
-          break;
+        //ConnectToIGTLServer();
+        this->isServer = false;
+        break;
         }
       else
         {
@@ -106,32 +106,32 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
   
   if (this->isServer)
     {
-      if(this->nh->getParam("/RIB_port", this->port))
-        {}
-      else
-        {
-          ROS_INFO("[ROS-IGTL-Bridge] Input socket port: ");
-          std::cin >> this->port;
-        }
+    if(this->nh->getParam("/RIB_port", this->port))
+      {}
+    else
+      {
+      ROS_INFO("[ROS-IGTL-Bridge] Input socket port: ");
+      std::cin >> this->port;
+      }
     }
   else // if this is a client
     {
-      // get IP address
-      if(nh->getParam("/RIB_server_ip", this->address))
-        {}
-      else
-        {
-          ROS_INFO("[ROS-IGTL-Bridge] Please enter ServerIP: ");
-          std::cin >> this->address;
-        }
-      // get port
-      if(nh->getParam("/RIB_port",this->port))
-        {}
-      else
-        {
-          ROS_INFO("[ROS-IGTL-Bridge] Please enter ServerPort:  ");
-          std::cin >> this->port;
-        }
+    // get IP address
+    if(nh->getParam("/RIB_server_ip", this->address))
+      {}
+    else
+      {
+      ROS_INFO("[ROS-IGTL-Bridge] Please enter ServerIP: ");
+      std::cin >> this->address;
+      }
+    // get port
+    if(nh->getParam("/RIB_port",this->port))
+      {}
+    else
+      {
+      ROS_INFO("[ROS-IGTL-Bridge] Please enter ServerPort:  ");
+      std::cin >> this->port;
+      }
     }
 
   //ROS_INFO("[ROS-IGTL-Bridge] ROS-IGTL-Bridge up and Running.");
@@ -172,8 +172,8 @@ int ROS_IGTL_Bridge::StartIGTLServer()
     int c = serverSocket->CreateServer(this->port);
     if (c < 0)
       {
-        ROS_ERROR("[ROS-IGTL-Bridge] Cannot create a server socket.");
-        return 0;
+      ROS_ERROR("[ROS-IGTL-Bridge] Cannot create a server socket.");
+      return 0;
       }
     }
   
@@ -186,7 +186,7 @@ int ROS_IGTL_Bridge::StartIGTLServer()
     this->converterManager->SetSocket(this->socket);
     if (this->socket.IsNotNull()) 
       {   
-        return 1;
+      return 1;
       }
     }
   
@@ -200,7 +200,7 @@ int ROS_IGTL_Bridge::ConnectToIGTLServer()
 
   if (clientSocket.IsNull()) // if called for the first time
     {
-      clientSocket = igtl::ClientSocket::New();
+    clientSocket = igtl::ClientSocket::New();
     }
   
   // connect to server
@@ -208,8 +208,8 @@ int ROS_IGTL_Bridge::ConnectToIGTLServer()
   
   if (r != 0)
     {
-      ROS_ERROR("[ROS-IGTL-Bridge] Cannot connect to server.");
-      return 0;
+    ROS_ERROR("[ROS-IGTL-Bridge] Cannot connect to server.");
+    return 0;
     }
   
   this->socket = (igtl::Socket *)(clientSocket);
@@ -223,41 +223,42 @@ void ROS_IGTL_Bridge::IGTLThread()
 
   while (1)
     {
-      if (this->isServer)
-        {
-          r = this->StartIGTLServer();
-        }
-      else
-        {
-          r = this->ConnectToIGTLServer();
-        }
-      if (r == 0)
-        {
-          ros::shutdown();  // TODO: Can the thread shutdown the process?
-        }
+    if (this->isServer)
+      {
+      r = this->StartIGTLServer();
+      }
+    else
+      {
+      r = this->ConnectToIGTLServer();
+      }
+    if (r == 0)
+      {
+      ros::shutdown();  // TODO: Can the thread shutdown the process?
+      }
       
-      igtl::MessageHeader::Pointer headerMsg;
-      headerMsg = igtl::MessageHeader::New();
-      int rs = 0;
-      int loop = 1;
-      while(loop)
+    igtl::MessageHeader::Pointer headerMsg;
+    headerMsg = igtl::MessageHeader::New();
+    int rs = 0;
+    int loop = 1;
+    
+    while(loop)
+      {
+      headerMsg->InitPack();
+      // receive packet
+      rs = this->socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+          
+      if (rs == 0)
         {
-          headerMsg->InitPack();
-          // receive packet
-          rs = this->socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
-          
-          if (rs == 0)
-            {
-              this->socket->CloseSocket();
-              this->converterManager->SetSocket(NULL);
-              loop = 0; // Terminate the thread.
-            }
-          
-          if (rs != headerMsg->GetPackSize())
-            continue;
-          
-          this->converterManager->ProcessIGTLMessage(headerMsg);
+        this->socket->CloseSocket();
+        this->converterManager->SetSocket(NULL);
+        loop = 0; // Terminate the thread.
         }
+          
+      if (rs != headerMsg->GetPackSize())
+        continue;
+          
+      this->converterManager->ProcessIGTLMessage(headerMsg);
+      }
     }
 }
 

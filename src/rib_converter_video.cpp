@@ -41,7 +41,7 @@ void RIBConverterVideo::onROSMessage(const ros_igtl_bridge::igtlvideo::ConstPtr 
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return;
+    return;
     }
   
   try

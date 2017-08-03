@@ -48,7 +48,7 @@ int RIBConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return 0;
+    return 0;
     }
 
   vtkSmartPointer<vtkPolyData>  poly = vtkSmartPointer<vtkPolyData>::New();
@@ -193,7 +193,7 @@ void RIBConverterPolyData::onROSMessage(const ros_igtl_bridge::igtlpolydata::Con
   igtl::Socket::Pointer socket = this->manager->GetSocket();
   if (socket.IsNull())
     {
-      return;
+    return;
     }
 
   vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
@@ -437,7 +437,7 @@ void RIBConverterPolyData::msgToPolyData( const ros_igtl_bridge::igtlpolydata::C
 
 ros_igtl_bridge::igtlpolydata RIBConverterPolyData::polyDataToMsg(const char* name, vtkSmartPointer<vtkPolyData> polydata )
 {
-    ros_igtl_bridge::igtlpolydata msg;
+  ros_igtl_bridge::igtlpolydata msg;
 
   msg.name=name;
 	
