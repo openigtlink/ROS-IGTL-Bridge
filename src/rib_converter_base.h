@@ -40,7 +40,7 @@ protected:
 
 public:
   void setNodeHandle(ros::NodeHandle* nh) { this->nodeHandle = nh; }
-  void setQueue(ros::NodeHandle* nh) { this->queue = &nh->getCallbackQueue(); }
+  void setQueue(ros::NodeHandle* nh) { this->queue = &(nh->getCallbackQueue()); }
   //void setSocket(igtl::Socket * socket) { this->socket = socket; }
   void setQueueSize(uint32_t size) { this->queueSize = size; }
   void setup(ros::NodeHandle* nh, uint32_t queuSize);
