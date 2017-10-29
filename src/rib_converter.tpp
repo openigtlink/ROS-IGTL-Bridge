@@ -79,7 +79,7 @@ bool RIBConverter<MessageType>::subscribe(const char* topic)
                                                this->queueSize, // queue length
                                                boost::bind(&RIBConverter<MessageType>::onROSMessage, this, _1),
                                                ros::VoidPtr(), // tracked object, we don't need one thus NULL
-                                               &this->queue // pointer to callback queue object
+                                               this->queue // pointer to callback queue object
                                                );
   this->subscriber = this->nodeHandle->subscribe(options);
 
