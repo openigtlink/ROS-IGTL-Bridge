@@ -53,11 +53,8 @@ ROS_IGTL_Bridge::ROS_IGTL_Bridge(int argc, char *argv[], const char* node_name)
 
   // run bridge as client or server
   std::string type;
-
-  ROS_INFO("[ROS-IGTL-Bridge] a");
   if(nh->getParam("/RIB_type",type))
     {
-    ROS_INFO("[ROS-IGTL-Bridge] b ");
     if(type == "client")
       {
       //ConnectToIGTLServer();
