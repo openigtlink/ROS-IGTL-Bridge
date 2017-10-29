@@ -39,6 +39,7 @@ RIBConverterBase::~RIBConverterBase()
 void RIBConverterBase::setup(ros::NodeHandle* nh, uint32_t queuSize)
 {
   this->setNodeHandle(nh);
+  this->setQueue(nh);
   this->setQueueSize(queueSize);
 }
 
