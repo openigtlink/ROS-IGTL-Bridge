@@ -45,14 +45,13 @@ and execute catkin_make in your workspace directory:
     $ cd ~/catkin_ws/
     $ catkin_make --cmake-args -DOpenIGTLink_DIR:PATH=<your OpenIGTLink directory>/OpenIGTLink-build
 
-
-Launch the test procedure for communication with [3D Slicer] (https://www.slicer.org/):
-
-    $ roslaunch ros_igtl_bridge test.launch
-    
-To simply run the bridge without sending test sample data, type:
+To run the bridge, type:
 
     $ roslaunch ros_igtl_bridge bridge.launch
+
+If the bridge is set up, you can launch the test procedure for communication with [3D Slicer] (https://www.slicer.org/):
+
+    $ roslaunch ros_igtl_bridge test.launch  
 
 It is possible to edit the launch files and set your IP & Port in the file. Run the node as server or client by adjusting the parameter RIB_type.
 Open the file and uncomment the lines:
