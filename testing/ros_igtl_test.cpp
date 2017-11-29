@@ -32,6 +32,8 @@
 #include <vtkTransform.h>
 #include <vtkPolyDataReader.h>
 
+#include <igtlTypes.h>
+
 //----------------------------------------------------------------------
 ROS_IGTL_Test::ROS_IGTL_Test(int argc, char *argv[], const char* node_name)
 {
@@ -226,9 +228,9 @@ void ROS_IGTL_Test::test_sending()
       polydata = polydata_reader->GetOutput();
 
       // TODO: Remove the dependency on ROS_IGTL_Bridge::PolyDataToMs()
-      //ros_igtl_bridge::igtlpolydata::Ptr polydata_msg (new ros_igtl_bridge::igtlpolydata());
-      //*polydata_msg =  ROS_IGTL_Bridge::PolyDataToMsg("ROS_IGTL_Test_PolyData",polydata);
-      //polydata_pub.publish(*polydata_msg);
+      ros_igtl_bridge::igtlpolydata::Ptr polydata_msg (new ros_igtl_bridge::igtlpolydata());
+      *polydata_msg =  polyDataToMsg("ROS_IGTL_Test_PolyData",polydata);
+      polydata_pub.publish(*polydata_msg);
     }
   std::string test_oct;
   if(nh->getParam("/test_oct",test_oct))
@@ -271,4 +273,110 @@ void ROS_IGTL_Test::PublishOCTScan(std::string filepath)
   memcpy((char*)(&img_msg.data[0]),OCTRawData.data(),size); 
 
   image_pub.publish(img_msg);
+}
+
+
+ros_igtl_bridge::igtlpolydata ROS_IGTL_Test::polyDataToMsg(const char* name, vtkSmartPointer<vtkPolyData> polydata )
+{
+  ros_igtl_bridge::igtlpolydata msg;
+
+  msg.name=name;
+	
+  // points
+  double *point;
+  msg.points.resize(polydata->GetNumberOfPoints());
+	
+  for (unsigned int i = 0; i <polydata->GetNumberOfPoints(); i ++)
+    {
+    point = polydata->GetPoint(i);
+    msg.points[i].x-=point[0];
+    msg.points[i].y-=point[1];
+    msg.points[i].z =point[2];
+    }
+	
+  // vertices
+  int nverts = polydata->GetNumberOfVerts();
+  if(nverts>0)
+    {
+    msg.verts.resize(nverts);
+		
+    for (unsigned int i = 0; i<nverts;i++)
+      {
+      vtkSmartPointer<vtkIdList> IdList = vtkSmartPointer<vtkIdList>::New();
+      polydata->GetCellPoints(i,IdList);
+      std::vector<igtlUint32> vec;
+      for (int j = 0; j < IdList->GetNumberOfIds(); j++)
+        {	
+        vec.push_back(IdList->GetId(j));
+        }
+      for (int k = 0;k < vec.size();k++)
+        msg.verts[i].data.push_back(vec[k]);
+
+      }
+    }
+
+  // lines
+  int nlines = polydata->GetNumberOfLines();
+  if(nlines>0)
+    {
+    msg.lines.resize(nlines);
+		
+    for (unsigned int i = 0; i<nlines;i++)
+      {
+      vtkSmartPointer<vtkIdList> IdList = vtkSmartPointer<vtkIdList>::New();
+      polydata->GetCellPoints(i,IdList);
+      std::vector<igtlUint32> vec;
+      for (int j = 0; j < IdList->GetNumberOfIds(); j++)
+        {	
+        vec.push_back(IdList->GetId(j));
+        }
+      for (int k = 0;k < vec.size();k++)
+        msg.lines[i].data.push_back(vec[k]);
+
+      }
+    }
+	
+  // strips
+  int ntstrips = polydata->GetNumberOfStrips();
+  if(ntstrips>0)
+    {
+    msg.strips.resize(ntstrips);
+		
+    for (unsigned int i = 0; i<ntstrips;i++)
+      {
+      vtkSmartPointer<vtkIdList> IdList = vtkSmartPointer<vtkIdList>::New();
+      polydata->GetCellPoints(i,IdList);
+      std::vector<igtlUint32> vec;
+      for (int j = 0; j < IdList->GetNumberOfIds(); j++)
+        {	
+        vec.push_back(IdList->GetId(j));
+        }
+      for (int k = 0;k < vec.size();k++)
+        msg.strips[i].data.push_back(vec[k]);
+
+      }
+    }
+	
+  // polygons
+  int pnumber = pnumber = polydata->GetNumberOfPolys();
+  if(pnumber>0)
+    {
+    msg.polygons.resize(pnumber);
+
+    for (unsigned int i = 0; i<pnumber;i++)
+      {
+      vtkSmartPointer<vtkIdList> IdList = vtkSmartPointer<vtkIdList>::New();
+      polydata->GetCellPoints(i,IdList);
+      std::vector<igtlUint32> vec;
+      for (int j = 0; j < IdList->GetNumberOfIds(); j++)
+        {	
+        vec.push_back(IdList->GetId(j));
+        }
+      msg.polygons[i].x = vec[0];
+      msg.polygons[i].y = vec[1];
+      msg.polygons[i].z = vec[2];
+      }
+    }
+
+  return msg;
 }
