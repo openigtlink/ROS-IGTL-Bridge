@@ -4,8 +4,7 @@
    <!--param name="RIB_port" value="18944" type="int"/-->
    <!--param name="RIB_type" value="client" type="str"/-->
    <!--node pkg="ros_igtl_bridge" type="ros_igtl_bridge_node" name="ros_igtl_bridge_node" output="screen"/-->
-
-   </node>
+   <!--/node-->
 <!-- start the test -->
    <param name="test_pd" value="$(find ros_igtl_bridge)/testing/model.vtk" type="str"/>
    <param name="test_oct" value="$(find ros_igtl_bridge)/testing/oct_raw.cache" type="str"/>
