@@ -96,6 +96,8 @@ private:
 
  private:
   ros_igtl_bridge::igtlpolydata polyDataToMsg(const char* name, vtkSmartPointer<vtkPolyData> polydata);
+  void msgToPolyData(const ros_igtl_bridge::igtlpolydata::ConstPtr& msg, vtkSmartPointer<vtkPolyData> polydata);
+  
         
 };
 #endif 

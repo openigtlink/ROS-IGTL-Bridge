@@ -127,7 +127,7 @@ void ROS_IGTL_Test::polydataCallback(const ros_igtl_bridge::igtlpolydata::ConstP
   ROS_INFO("[ROS_IGTL_Test] PolyData %s received: \n",msg->name.c_str());
   vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
   // TODO: Remove the dependency on ROS_IGTL_Bridge::msgToPolyData();
-  //ROS_IGTL_Bridge::msgToPolyData(msg,polydata);
+  ROS_IGTL_Bridge::msgToPolyData(msg,polydata);
   std::cout<<"Number of Points "<<polydata->GetNumberOfPoints()<<std::endl;
   std::cout<<"Number of Strips "<<polydata->GetNumberOfStrips()<<std::endl;
   Show_Polydata(polydata);
@@ -380,3 +380,124 @@ ros_igtl_bridge::igtlpolydata ROS_IGTL_Test::polyDataToMsg(const char* name, vtk
 
   return msg;
 }
+
+
+//----------------------------------------------------------------------
+void ROS_IGTL_Test::msgToPolyData(const ros_igtl_bridge::igtlpolydata::ConstPtr& msg, vtkSmartPointer<vtkPolyData> polydata)
+{
+  // points
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  for (int i = 0; i < msg->points.size(); i ++)
+    {
+    double point[3];
+    point[0] = msg->points[i].x;
+    point[1] = msg->points[i].y;
+    point[2] = msg->points[i].z;
+    points->InsertNextPoint(point); 
+    }
+  polydata->SetPoints(points);
+
+  // strips
+  int ntstrips = msg->strips.size();
+  if (ntstrips > 0)
+    {
+    vtkSmartPointer<vtkCellArray> tstripCells = vtkSmartPointer<vtkCellArray>::New();
+    for(int i = 0; i < ntstrips; i++)
+      {
+      vtkSmartPointer<vtkTriangleStrip> tstrip = vtkSmartPointer<vtkTriangleStrip>::New();
+			
+      std::list<igtlUint32> cell;
+      for (int k = 0;k < msg->strips[i].data.size();k++)
+        cell.push_back(msg->strips[i].data[k]);
+			
+      tstrip->GetPointIds()->SetNumberOfIds(cell.size());
+      std::list<igtlUint32>::iterator iter;
+      int j = 0;
+      for (iter = cell.begin(); iter != cell.end(); iter ++)
+        {
+        tstrip->GetPointIds()->SetId(j, *iter);
+        j++;
+        }
+      tstripCells->InsertNextCell(tstrip);
+      }
+    polydata->SetStrips(tstripCells);
+    }
+	
+  // lines
+  int nlines = msg->lines.size();
+  if (nlines > 0)
+    {
+    vtkSmartPointer<vtkCellArray> linesCells = vtkSmartPointer<vtkCellArray>::New();
+    for(int i = 0; i < nlines; i++)
+      {
+      vtkSmartPointer<vtkPolyLine> lines = vtkSmartPointer<vtkPolyLine>::New();
+      std::list<igtlUint32> cell;
+      for (int k = 0;k < msg->lines[i].data.size();k++)
+        cell.push_back(msg->lines[i].data[k]);
+		
+      lines->GetPointIds()->SetNumberOfIds(cell.size());
+      std::list<igtlUint32>::iterator iter;
+      int j = 0;
+      for (iter = cell.begin(); iter != cell.end(); iter ++)
+        {
+        lines->GetPointIds()->SetId(j, *iter);
+        j++;
+        }
+      linesCells->InsertNextCell(lines);
+      }
+    polydata->SetLines(linesCells);
+    }
+	
+  // verts
+  int nverts = msg->verts.size();
+  if (nverts > 0)
+    {
+    vtkSmartPointer<vtkCellArray> vertCells = vtkSmartPointer<vtkCellArray>::New();
+    for(int i = 0; i < nlines; i++)
+      {
+      vtkSmartPointer<vtkVertex> vertex = vtkSmartPointer<vtkVertex>::New();
+      std::list<igtlUint32> cell;
+      for (int k = 0;k < msg->verts[i].data.size();k++)
+        cell.push_back(msg->verts[i].data[k]);
+		
+      vertex->GetPointIds()->SetNumberOfIds(cell.size());
+      std::list<igtlUint32>::iterator iter;
+      int j = 0;
+      for (iter = cell.begin(); iter != cell.end(); iter ++)
+        {
+        vertex->GetPointIds()->SetId(j, *iter);
+        j++;
+        }
+      vertCells->InsertNextCell(vertex);
+      }
+    polydata->SetVerts(vertCells);
+    }
+
+  // Polygons
+  int npolygons = msg->polygons.size();
+  if (npolygons > 0)
+    {
+    vtkSmartPointer<vtkCellArray> polygonCells = vtkSmartPointer<vtkCellArray>::New();
+    for(int i = 0; i < npolygons; i++)
+      {
+      vtkSmartPointer<vtkPolygon> polygon = vtkSmartPointer<vtkPolygon>::New();		
+      std::list<igtlUint32> cell;
+      cell.push_back(msg->polygons[i].x);
+      cell.push_back(msg->polygons[i].y);
+      cell.push_back(msg->polygons[i].z);
+      polygon->GetPointIds()->SetNumberOfIds(cell.size());
+      std::list<igtlUint32>::iterator iter;
+      int j = 0;
+      for (iter = cell.begin(); iter != cell.end(); iter ++)
+        {
+        polygon->GetPointIds()->SetId(j, *iter);
+        j++;
+        }
+      polygonCells->InsertNextCell(polygon);
+			
+      }
+    polydata->SetPolys(polygonCells);
+    }
+  polydata->Modified();
+}
+
