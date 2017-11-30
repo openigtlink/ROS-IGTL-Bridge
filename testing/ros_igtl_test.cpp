@@ -126,8 +126,7 @@ void ROS_IGTL_Test::polydataCallback(const ros_igtl_bridge::igtlpolydata::ConstP
 {
   ROS_INFO("[ROS_IGTL_Test] PolyData %s received: \n",msg->name.c_str());
   vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
-  // TODO: Remove the dependency on ROS_IGTL_Bridge::msgToPolyData();
-  ROS_IGTL_Bridge::msgToPolyData(msg,polydata);
+  msgToPolyData(msg,polydata);
   std::cout<<"Number of Points "<<polydata->GetNumberOfPoints()<<std::endl;
   std::cout<<"Number of Strips "<<polydata->GetNumberOfStrips()<<std::endl;
   Show_Polydata(polydata);
