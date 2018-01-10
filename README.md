@@ -27,7 +27,7 @@ First, install OpenIGTLink in your local computer. A detailed instruction can be
     $ git clone https://github.com/openigtlink/OpenIGTLink.git
     $ mkdir OpenIGTLink-build
     $ cd OpenIGTLink-build
-    $ cmake -DBUILD_EXAMPLES:BOOL=ON ../OpenIGTLink
+    $ cmake -DBUILD_SHARED_LIBS:BOOL=ON ../OpenIGTLink
     $ make
 
 Install [ROS](http://wiki.ros.org) and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
