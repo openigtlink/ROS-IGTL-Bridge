@@ -156,6 +156,7 @@ add_executable(${PROJECT_NAME}_test testing/ros_igtl_test.cpp testing/main_test.
 #add_dependencies(ros_igtl_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_dependencies(${PROJECT_NAME}_lib ${PROJECT_NAME}_generate_messages_cpp)
+add_dependencies(${PROJECT_NAME}_test ${PROJECT_NAME}_generate_messages_cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -178,7 +179,6 @@ target_link_libraries(${PROJECT_NAME}_test ${VTK_LIBRARIES})
 ## TODO: Remove the dependency on OpenIGTLink
 target_link_libraries(${PROJECT_NAME}_test OpenIGTLink)
 
-#target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME}_lib)
 
 #############
 ## Install ##
