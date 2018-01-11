@@ -141,7 +141,7 @@ add_library(${PROJECT_NAME}_lib
   src/rib_converter_polydata.cpp
   src/rib_converter_string.cpp
   src/rib_converter_transform.cpp
-  src/rib_converter_image.cpp
+  src/rib_converter_video.cpp
   src/ros_igtl_bridge.cpp
  )
 

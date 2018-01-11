@@ -20,7 +20,7 @@
 #include "ros/ros.h"
 
 // ROS message header files
-#include "ros_igtl_bridge/igtlvidel.h"
+//#include "ros_igtl_bridge/igtlvideo.h"
 #include "image_transport/image_transport.h"
 #include "cv_bridge/cv_bridge.h"
 #include "sensor_msgs/image_encodings.h"
@@ -31,9 +31,15 @@
 
 // OpenIGTLink message files
 #include "igtlMessageHeader.h"
+#include "igtlVideoMessage.h"
+
+#if defined(OpenIGTLink_USE_VP9)
+#include "VP9Encoder.h"
+#include "VP9Decoder.h"
+#endif
 
 
-class RIBConverterVideo : public RIBConverter<ros_igtl_bridge::igtlvideo>
+class RIBConverterVideo : public RIBConverter<sensor_msgs::Image>
 {
 
 public:
@@ -44,11 +50,20 @@ public:
   //virtual uint32_t queueSizePublish() { return 10; }
   //virtual uint32_t queueSizeSubscribe() { return 10; }
   virtual const char* messageTypeString() { return "VIDEO"; }
-
+  
 public:  
   virtual int onIGTLMessage(igtl::MessageHeader * header);
- protected:
-  virtual void onROSMessage(const ros_igtl_bridge::igtlvideo::ConstPtr & msg);
+  
+protected:
+  
+  virtual void InitCodec();
+  virtual void onROSMessage(const sensor_msgs::Image::ConstPtr & msg);
+
+protected:
+  GenericEncoder* VideoEncoder;
+  GenericDecoder* VideoDecoder;
+  unsigned char* ImageBuffer;
+  
 };
 
 
