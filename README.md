@@ -33,6 +33,7 @@ First, install OpenIGTLink in your local computer. A detailed instruction can be
 Install [ROS](http://wiki.ros.org) and follow the standard [ROS instructions](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) to create your ROS workspace if necessary.
 
     $ mkdir -p ~/catkin_ws/src
+    $ cd ~/catkin_ws
     $ catkin_make
     $ source devel/setup.bash
 	
