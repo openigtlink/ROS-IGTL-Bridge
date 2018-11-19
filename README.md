@@ -37,8 +37,13 @@ Install [ROS](http://wiki.ros.org) and follow the standard [ROS instructions](ht
     $ catkin_make
     $ source devel/setup.bash
 	
+The ROS-IGTL-Bridge require VTK. You may install it using apt-get:
+
+    $ sudo apt-get install libvtk6-dev
+
 Then download the ros_igtl_bridge package from GitHub:
-	
+
+    $ cd ~/catkin_ws/src
     $ git clone https://github.com/openigtlink/ROS-IGTL-Bridge
 
 and execute catkin_make in your workspace directory:
