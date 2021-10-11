@@ -43,8 +43,9 @@ int RIBConverterImage::onIGTLMessage(igtl::MessageHeader * header)
     {
     return 0;
     }
-  
-  socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize());
+
+  bool timeout(false);
+  socket->Receive(imgMsg->GetPackBodyPointer(), imgMsg->GetPackBodySize(), timeout);
   int c = imgMsg->Unpack(1);
   
   if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 

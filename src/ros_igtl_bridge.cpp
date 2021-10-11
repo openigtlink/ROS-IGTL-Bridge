@@ -242,7 +242,8 @@ void ROS_IGTL_Bridge::IGTLThread()
       {
       headerMsg->InitPack();
       // receive packet
-      rs = this->socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+      bool timeout(false);
+      rs = this->socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize(), timeout);
           
       if (rs == 0)
         {

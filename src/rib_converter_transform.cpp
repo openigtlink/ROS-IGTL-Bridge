@@ -46,7 +46,8 @@ int RIBConverterTransform::onIGTLMessage(igtl::MessageHeader * header)
   transMsg->AllocatePack();
 
   // receive transform data from the socket
-  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize());
+  bool timeout(false);
+  socket->Receive(transMsg->GetPackBodyPointer(), transMsg->GetPackBodySize(), timeout);
 
   // unpack message
   int c = transMsg->Unpack(1);
