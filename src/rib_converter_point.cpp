@@ -43,7 +43,8 @@ int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
     return 0;
     }
 
-  socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize());
+  bool timeout(false);
+  socket->Receive(pointMsg->GetPackBodyPointer(), pointMsg->GetPackBodySize(), timeout);
   int c = pointMsg->Unpack(1);
   
   if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) 

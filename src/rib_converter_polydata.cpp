@@ -58,8 +58,9 @@ int RIBConverterPolyData::onIGTLMessage(igtl::MessageHeader * header)
   polyDataMsg = igtl::PolyDataMessage::New();
   polyDataMsg->SetMessageHeader(header);
   polyDataMsg->AllocatePack();
-	
-  socket->Receive(polyDataMsg->GetPackBodyPointer(), polyDataMsg->GetPackBodySize());
+
+  bool timeout(false);
+  socket->Receive(polyDataMsg->GetPackBodyPointer(), polyDataMsg->GetPackBodySize(), timeout);
   int c = polyDataMsg->Unpack(1);
 	
   if ((c & igtl::MessageHeader::UNPACK_BODY) == 0) // if CRC check fails

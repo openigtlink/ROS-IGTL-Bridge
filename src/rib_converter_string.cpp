@@ -46,7 +46,8 @@ int RIBConverterString::onIGTLMessage(igtl::MessageHeader * header)
   stringMsg->AllocatePack();
 
   // Receive string data from the socket
-  socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize());
+  bool timeout(false);
+  socket->Receive(stringMsg->GetPackBodyPointer(), stringMsg->GetPackBodySize(), timeout);
 
   int b = stringMsg->Unpack(1);
   ros_igtl_bridge::igtlstring msg;
